@@ -1,6 +1,5 @@
 <template>
 	<div class="signin">
-    <el-input v-model="key" placeholder="auth key" ref="key" type="password" size="small" autofocus="true" @keyup.enter.native="signin" style="width:225px"></el-input>
     <el-button type="success" size="small" native-type="submit" @click="signin">Signin</el-button>
 	</div>
 </template>
@@ -11,7 +10,7 @@ export default {
   data() {
     return {
 			url: process.env.BASE_URL + '/authenticate',
-      key: 'C723C8FB14AF862562AF7E9A15891'
+      key: ''
     };
   },
   methods: {
@@ -30,9 +29,6 @@ export default {
       this.axios.post(my.url, fd, config)
 				.then (function (resp) {
           my.$message({message: '认证成功', type: 'success'});
-          my.$router.push({
-            path: 'article'
-          });
 				})
 				.catch (function (err) {
           my.$message.error("认证失败：" + err.message);
