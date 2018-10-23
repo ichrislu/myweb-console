@@ -29,13 +29,13 @@ export default {
 
       this.axios.post(my.url, fd, config)
 				.then (function (resp) {
-          my.$message({message: '认证成功', type: 'success'});
+          my.$notify({title: '成功', message: '认证成功', type: 'success'});
           my.$router.push({
-            path: 'article'
+            path: "article"
           });
 				})
 				.catch (function (err) {
-          my.$message.error("认证失败：" + err.message);
+          my.$notify.error({title: '认证失败', message: err.message});
           my.$refs.key.focus();
           my.key = '';
 				})

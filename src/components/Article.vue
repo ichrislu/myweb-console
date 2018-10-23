@@ -1,51 +1,116 @@
 <template>
 	<div class="signin">
-    <el-button type="success" size="small" native-type="submit" @click="signin">Signin</el-button>
+    <el-container>
+      <el-aside>
+        <el-menu router="true" class="el-menu-vertical">
+          <el-menu-item index="1" route="/article">
+            <i class="el-icon-document"></i>
+            <span slot="title">所有文章</span>
+          </el-menu-item>
+          <el-menu-item index="2" disabled>
+            <i class="el-icon-star-on"></i>
+            <span slot="title">标签管理</span>
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
+      <el-main>
+        <template>
+          <el-table
+            :data="articles"
+            stripe
+            style="width: 100%">
+            <el-table-column
+              prop="aid"
+              label="ID"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="title"
+              label="标题">
+            </el-table-column>
+            <el-table-column
+              prop="issue_time"
+              label="发布时间"
+              width="200">
+            </el-table-column>
+            <el-table-column
+              prop="update_time"
+              label="更新时间"
+              width="200">
+            </el-table-column>
+            <el-table-column label="操作" width="100">
+              <template slot-scope="scope">
+                <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="edit(scope.row.aid)"></el-button>
+                <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del(scope.row.aid)"></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="1000">
+        </el-pagination>
+      </el-main>
+    </el-container>
 	</div>
 </template>
 
 <script>
 export default {
-  name: 'Signin',
+  name: 'Article',
   data() {
     return {
-			url: process.env.BASE_URL + '/authenticate',
-      key: ''
+			articles: [],
+			url: process.env.BASE_URL + '/a'
     };
   },
   methods: {
-    signin() {
+    getArticles() {
       var my = this;
 
-      var fd = new FormData();
-      fd.append('key', my.key)
+			let params = {
+				t: my.$route.query.t,
+				l: my.lastTime
+			}
 
-      let config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-
-      this.axios.post(my.url, fd, config)
+      this.axios.get(my.url, {params: params})
 				.then (function (resp) {
-          my.$message({message: '认证成功', type: 'success'});
+					my.articles = my.articles.concat(resp.data);
 				})
 				.catch (function (err) {
-          my.$message.error("认证失败：" + err.message);
-          my.$refs.key.focus();
-          my.key = '';
+          my.$notify.error({title: "拉取失败", message: err.message});
 				})
+    },
+    edit(aid) {
+      console.info(aid)
+    },
+    del(aid) {
+      this.$confirm('确认删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // todo...
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        // nothing to do
+      });
     }
-  }
+  },
+	mounted() {
+		this.getArticles();
+	}
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.signin {
-  width: 300px;
-  align-content: center;
-  /* margin:auto auto; */
-  left:50%;top:50%;position: absolute;margin-left:-200px;margin-top:-100px
+.el-menu-vertical:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
 }
 </style>
