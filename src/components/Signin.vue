@@ -30,6 +30,7 @@ export default {
       this.axios.post(my.url, fd, config)
 				.then (function (resp) {
           my.$notify({title: '成功', message: '认证成功', type: 'success'});
+          sessionStorage.setItem("key", my.key)
           my.$router.push({
             path: "article/list"
           });

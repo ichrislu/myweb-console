@@ -107,7 +107,7 @@ export default {
         var my = this;
 
         let headers = {
-          'Authorization': 'Bearer C723C8FB14AF862562AF7E9A15891'
+          'Authorization': 'Bearer ' + sessionStorage.getItem("key")
         }
 
         let params = {
