@@ -31,7 +31,7 @@ export default {
 				.then (function (resp) {
           my.$notify({title: '成功', message: '认证成功', type: 'success'});
           my.$router.push({
-            path: "article"
+            path: "article/list"
           });
 				})
 				.catch (function (err) {

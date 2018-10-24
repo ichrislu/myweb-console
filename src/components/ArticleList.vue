@@ -2,42 +2,32 @@
 	<div class="signin">
     <el-container>
       <el-aside>
-        <el-menu router="true" class="el-menu-vertical">
+        <el-menu router="true" class="el-menu-vertical" style="align=left">
           <el-menu-item index="1" route="/article">
             <i class="el-icon-document"></i>
-            <span slot="title">所有文章</span>
+            <span slot="title">All Article</span>
+          </el-menu-item>
+          <el-menu-item index="1" route="/article">
+            <i class="el-icon-news"></i>
+            <span slot="title">New Article</span>
           </el-menu-item>
           <el-menu-item index="2" disabled>
             <i class="el-icon-star-on"></i>
-            <span slot="title">标签管理</span>
+            <span slot="title">Tags</span>
+          </el-menu-item>
+          <el-menu-item index="2" route="/signout">
+            <i class="el-icon-sold-out"></i>
+            <span slot="title">Signout</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
         <template>
-          <el-table
-            :data="articles"
-            stripe
-            style="width: 100%">
-            <el-table-column
-              prop="aid"
-              label="ID"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="title"
-              label="标题">
-            </el-table-column>
-            <el-table-column
-              prop="issue_time"
-              label="发布时间"
-              width="200">
-            </el-table-column>
-            <el-table-column
-              prop="update_time"
-              label="更新时间"
-              width="200">
-            </el-table-column>
+          <el-table :data="articles" stripe style="width: 100%">
+            <el-table-column prop="aid" label="ID" width="100"></el-table-column>
+            <el-table-column prop="title" label="标题"></el-table-column>
+            <el-table-column prop="issue_time" label="发布时间" width="200"></el-table-column>
+            <el-table-column prop="update_time" label="更新时间" width="200"></el-table-column>
             <el-table-column label="操作" width="100">
               <template slot-scope="scope">
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="edit(scope.row.aid)"></el-button>
@@ -46,11 +36,7 @@
             </el-table-column>
           </el-table>
         </template>
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :total="1000">
-        </el-pagination>
+        <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
       </el-main>
     </el-container>
 	</div>
@@ -91,11 +77,22 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // todo...
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
+        var my = this;
+
+        let params = {
+          aid: aid
+        }
+
+        this.axios.delete(my.url, {params: params})
+          .then (function (resp) {
+            getArticles()
+          })
+          .catch (function (err) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          })
       }).catch(() => {
         // nothing to do
       });
