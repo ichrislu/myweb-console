@@ -2,22 +2,18 @@
 	<div class="signin">
     <el-container>
       <el-aside>
-        <el-menu router="true" class="el-menu-vertical" style="align=left">
-          <el-menu-item index="1" route="/article">
+        <el-menu router class="el-menu-vertical" style="align=left">
+          <el-menu-item index="1" route="/article/list">
             <i class="el-icon-document"></i>
             <span slot="title">All Article</span>
           </el-menu-item>
-          <el-menu-item index="1" route="/article">
+          <el-menu-item index="1" route="/article/new">
             <i class="el-icon-news"></i>
             <span slot="title">New Article</span>
           </el-menu-item>
           <el-menu-item index="2" disabled>
             <i class="el-icon-star-on"></i>
             <span slot="title">Tags</span>
-          </el-menu-item>
-          <el-menu-item index="2" route="/signout">
-            <i class="el-icon-sold-out"></i>
-            <span slot="title">Signout</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -36,7 +32,7 @@
             </el-table-column>
           </el-table>
         </template>
-        <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
+        <el-pagination background small layout="prev, pager, next" :page-size="pageSize" :total="total" @current-change="handleCurrentChange"></el-pagination>
       </el-main>
     </el-container>
 	</div>
@@ -47,8 +43,11 @@ export default {
   name: 'Article',
   data() {
     return {
+      pageIdx: 1,
+      pageSize: 10,
+      total: 0,
 			articles: [],
-			url: process.env.BASE_URL + '/a'
+			url: process.env.BASE_URL
     };
   },
   methods: {
@@ -57,19 +56,47 @@ export default {
 
 			let params = {
 				t: my.$route.query.t,
-				l: my.lastTime
+        lt: my.lastTime,
+        pi: my.pageIdx,
+        ps: my.pageSize
 			}
 
-      this.axios.get(my.url, {params: params})
+      this.axios.get(my.url + '/a', {params: params})
 				.then (function (resp) {
-					my.articles = my.articles.concat(resp.data);
+					my.articles = resp.data;
 				})
 				.catch (function (err) {
-          my.$notify.error({title: "拉取失败", message: err.message});
+          my.$notify.error({title: "拉取文章失败", message: err.message});
 				})
     },
+    getArticleCount() {
+      var my = this;
+
+			let params = {
+				t: my.$route.query.t,
+				lt: my.lastTime
+			}
+
+      this.axios.get(my.url + '/a/count', {params: params})
+				.then (function (resp) {
+					my.total = resp.data
+				})
+				.catch (function (err) {
+          my.$notify.error({title: "拉取文章数量失败", message: err.message});
+				})
+    },
+    handleCurrentChange(val) {
+      this.pageIdx = val
+
+      this.getArticles();
+      this.getArticleCount();
+    },
     edit(aid) {
-      console.info(aid)
+      var my = this;
+      
+      my.$router.push({
+        path: "/article/edit/" + aid
+      });
     },
     del(aid) {
       this.$confirm('确认删除?', '提示', {
@@ -79,27 +106,31 @@ export default {
       }).then(() => {
         var my = this;
 
+        let headers = {
+          'Authorization': 'Bearer C723C8FB14AF862562AF7E9A15891'
+        }
+
         let params = {
           aid: aid
         }
 
-        this.axios.delete(my.url, {params: params})
+        this.axios.delete(my.url + "/admin/a/" + aid, {headers: headers}, {params: params})
           .then (function (resp) {
-            getArticles()
+            my.getArticles()
+            my.getArticleCount();
+            my.$notify.success({title: "提示", message: "删除成功"})
           })
           .catch (function (err) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
+            my.$notify.err({title: "失败", message: err.message});
           })
-      }).catch(() => {
-        // nothing to do
+      }).catch((err) => {
+        this.$notify.warning({title: "异常", message: err.message})
       });
     }
   },
 	mounted() {
-		this.getArticles();
+    this.getArticles();
+    this.getArticleCount();
 	}
 }
 </script>
