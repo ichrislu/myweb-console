@@ -67,33 +67,17 @@ export default {
 
       this.axios.get(my.url + '/a', {params: params})
 				.then (function (resp) {
-					my.articles = resp.data;
+          my.articles = resp.data.Articles;
+          my.total = resp.data.Total;
 				})
 				.catch (function (err) {
           my.$notify.error({title: "拉取文章失败", message: err.message});
-				})
-    },
-    getArticleCount() {
-      var my = this;
-
-			let params = {
-				t: my.$route.query.t,
-				lt: my.lastTime
-			}
-
-      this.axios.get(my.url + '/a/count', {params: params})
-				.then (function (resp) {
-					my.total = resp.data
-				})
-				.catch (function (err) {
-          my.$notify.error({title: "拉取文章数量失败", message: err.message});
 				})
     },
     handleCurrentChange(val) {
       this.pageIdx = val
 
       this.getArticles();
-      this.getArticleCount();
     },
     edit(aid) {
       var my = this;
@@ -149,7 +133,6 @@ export default {
   },
 	mounted() {
     this.getArticles();
-    this.getArticleCount();
 	}
 }
 </script>
