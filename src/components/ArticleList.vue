@@ -15,6 +15,10 @@
             <i class="el-icon-star-on"></i>
             <span slot="title">Tags</span>
           </el-menu-item>
+          <el-menu-item index="3">
+            <i class="el-icon-sold-out"></i>
+            <span slot="title" @click.stop="signout">Signout</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
@@ -93,7 +97,7 @@ export default {
     },
     edit(aid) {
       var my = this;
-      
+
       my.$router.push({
         path: "/article/edit/" + aid
       });
@@ -121,11 +125,26 @@ export default {
             my.$notify.success({title: "提示", message: "删除成功"})
           })
           .catch (function (err) {
-            my.$notify.err({title: "失败", message: err.message});
+            my.$notify.error({title: "失败", message: err.message});
           })
       }).catch((err) => {
-        this.$notify.warning({title: "异常", message: err.message})
+        if (err != "cancel") {
+          this.$notify.warning({title: "异常", message: err.message})
+        }
       });
+    },
+    signout() {
+      sessionStorage.removeItem("key")
+      this.$router.push({
+        path: "/"
+      })
+    }
+  },
+  beforeCreate() {
+    if (sessionStorage.getItem("key") == null) {
+      this.$router.push({
+        path: "/"
+      })
     }
   },
 	mounted() {

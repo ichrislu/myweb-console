@@ -12,6 +12,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.4.8",
+    "mavon-editor": "^2.6.17",
+    "simplemde": "^1.11.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue-showdown": "^2.0.2"
