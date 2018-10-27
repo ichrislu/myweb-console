@@ -4,6 +4,7 @@ import Signin from '@/components/Signin'
 import Home from '@/components/Home'
 import ArticleList from '@/components/ArticleList'
 import NewArticle from '@/components/NewArticle'
+import EditArticle from '@/components/EditArticle'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
@@ -19,7 +20,8 @@ export default new Router({
       component: Home,
       children: [
         { path: '/article/list', component: ArticleList },
-        { path: '/article/new', component: NewArticle }
+        { path: '/article/new', component: NewArticle },
+        { path: '/article/edit/:aid', component: EditArticle }
       ]
     },
     {

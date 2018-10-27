@@ -51,11 +51,13 @@ export default {
           my.$notify.error({ title: "拉取文章失败", message: err.message });
         });
     },
+
     handleCurrentChange(val) {
       this.pageIdx = val;
 
       this.getArticles();
     },
+
     edit(aid) {
       var my = this;
 
@@ -63,44 +65,46 @@ export default {
         path: "/article/edit/" + aid
       });
     },
+
     del(aid) {
       this.$confirm("确认删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(() => {
-          var my = this;
+      .then(() => {
+        var my = this;
 
-          let headers = {
-            Authorization: "Bearer " + sessionStorage.getItem("key")
-          };
+        let headers = {
+          Authorization: "Bearer " + sessionStorage.getItem("key")
+        };
 
-          let params = {
-            aid: aid
-          };
+        let params = {
+          aid: aid
+        };
 
-          this.axios
-            .delete(
-              my.url + "/admin/a/" + aid,
-              { headers: headers },
-              { params: params }
-            )
-            .then(function(resp) {
-              my.getArticles();
-              my.$notify.success({ title: "提示", message: "删除成功" });
-            })
-            .catch(function(err) {
-              my.$notify.error({ title: "失败", message: err.message });
-            });
-        })
-        .catch(err => {
-          if (err != "cancel") {
-            this.$notify.warning({ title: "异常", message: err.message });
-          }
-        });
+        this.axios
+          .delete(
+            my.url + "/admin/a/" + aid,
+            { headers: headers },
+            { params: params }
+          )
+          .then(function(resp) {
+            my.getArticles();
+            my.$notify.success({ title: "提示", message: "删除成功" });
+          })
+          .catch(function(err) {
+            my.$notify.error({ title: "失败", message: err.message });
+          });
+      })
+      .catch(err => {
+        if (err != "cancel") {
+          this.$notify.warning({ title: "异常", message: err.message });
+        }
+      });
     }
   },
+
   mounted() {
     this.getArticles();
   }

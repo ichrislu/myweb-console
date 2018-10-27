@@ -1,14 +1,19 @@
 <template>
-	<div class="new-article">
+	<div class="edit-article">
      <el-form ref="form" :model="form" label-width="50px">
       <el-form-item label="Title">
         <el-col :span="5">
           <el-input v-model="form.title"></el-input>
         </el-col>
       </el-form-item>
-      <el-form-item label="Time">
+      <el-form-item label="Issue Time">
         <el-col :span="1">
-          <el-date-picker v-model="form.datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+          <el-date-picker v-model="form.issue_time" type="datetime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+        </el-col>
+      </el-form-item>
+      <el-form-item label="Update Time">
+        <el-col :span="1">
+          <el-date-picker v-model="form.update_time" type="datetime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
         </el-col>
       </el-form-item>
       <el-form-item label="Tags">
@@ -35,14 +40,15 @@
 
 <script>
 export default {
-  name: "NewArticle",
+  name: "EditArticle",
   data() {
     return {
       url: process.env.BASE_URL,
       form: {
         title: '',
-        datetime: '',
-        tags: ['标签一', '标签二', '标签三'],
+        issue_time: '',
+        update_time: '',
+        tags: '',
         inputVisible: false,
         inputValue: '',
         content: ''
@@ -50,14 +56,36 @@ export default {
     };
   },
   methods: {
+    getArticles() {
+      var my = this;
+
+      this.axios
+        .get(my.url + "/a/" + my.$route.params.aid)
+        .then(function(resp) {
+          console.info(resp.data)
+          my.form.title = resp.data.title,
+          my.form.issue_time = resp.data.issue_time,
+          my.form.update_time = resp.data.update_time,
+          console.info(my.form.issue_time),
+          console.info(my.form.update_time),
+          my.form.tags = resp.data.tag.split(','),
+          my.form.content = resp.data.content
+        })
+        .catch(function(err) {
+          my.$notify.error({ title: "拉取文章失败", message: err.message });
+        });
+    },
     onSubmit() {
       var my = this;
 
       var fd = new FormData();
       fd.append('title', my.form.title)
       fd.append('content', my.form.content)
-      fd.append('time', my.form.datetime)
-      fd.append('tag', my.form.tags)
+      fd.append('issueTime', my.form.issue_time)
+      fd.append('updateTime', my.form.update_time)
+      
+      console.info(my.form.issue_time)
+      console.info(my.form.update_time)
 
       let config = {
         headers: {
@@ -66,15 +94,15 @@ export default {
         }
       }
 
-      this.axios.post(my.url + "/admin/a", fd, config)
+      this.axios.put(my.url + "/admin/a/" + my.$route.params.aid, fd, config)
         .then(function(resp) {
-          my.$notify.error({ title: "提示", message: "添加文章成功" });
+          my.$notify.error({ title: "提示", message: "编辑文章成功" });
           my.$router.push({
             path: "/article/list"
           });
         })
         .catch(function(err) {
-          my.$notify.error({ title: "添加文章失败", message: err });
+          my.$notify.error({ title: "编辑文章失败", message: err });
         });
     },
 
@@ -97,6 +125,9 @@ export default {
       this.form.inputVisible = false;
       this.form.inputValue = '';
     }
+  },
+  mounted() {
+    this.getArticles();
   }
 };
 </script>
