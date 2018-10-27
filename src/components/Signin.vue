@@ -41,6 +41,9 @@ export default {
           my.key = '';
 				})
     }
+  },
+  init() {
+
   }
 }
 </script>

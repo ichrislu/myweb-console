@@ -1,6 +1,5 @@
 <template>
-	<div class="signin">
-    
+	<div class="article-list">
         <template>
           <el-table :data="articles" stripe style="width: 100%">
             <el-table-column prop="aid" label="ID" width="100"></el-table-column>
@@ -15,14 +14,13 @@
             </el-table-column>
           </el-table>
         </template>
-        <el-pagination background small layout="prev, pager, next" :page-size="pageSize" :total="total" @current-change="handleCurrentChange"></el-pagination>
-
+        <el-pagination background small layout="total, prev, pager, next" :page-size="pageSize" :total="total" @current-change="handleCurrentChange"></el-pagination>
 	</div>
 </template>
 
 <script>
 export default {
-  name: "Article",
+  name: "ArticleList",
   data() {
     return {
       pageIdx: 1,
@@ -90,7 +88,6 @@ export default {
             )
             .then(function(resp) {
               my.getArticles();
-              my.getArticleCount();
               my.$notify.success({ title: "提示", message: "删除成功" });
             })
             .catch(function(err) {
@@ -103,19 +100,6 @@ export default {
           }
         });
     }
-    // signout() {
-    //   sessionStorage.removeItem("key")
-    //   this.$router.push({
-    //     path: "/"
-    //   })
-    // }
-  },
-  beforeCreate() {
-    // if (sessionStorage.getItem("key") == null) {
-    //   this.$router.push({
-    //     path: "/"
-    //   })
-    // }
   },
   mounted() {
     this.getArticles();
