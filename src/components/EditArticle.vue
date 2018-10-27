@@ -8,12 +8,12 @@
       </el-form-item>
       <el-form-item label="Issue Time">
         <el-col :span="1">
-          <el-date-picker v-model="form.issue_time" type="datetime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+          <el-date-picker v-model="form.issue_time" type="datetime" value-format="yyyy-MM-ddTHH:mm:ss+08:00" placeholder="选择日期时间"></el-date-picker>
         </el-col>
       </el-form-item>
       <el-form-item label="Update Time">
         <el-col :span="1">
-          <el-date-picker v-model="form.update_time" type="datetime" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+          <el-date-picker v-model="form.update_time" type="datetime" value-format="yyyy-MM-ddTHH:mm:ss+08:00" placeholder="选择日期时间"></el-date-picker>
         </el-col>
       </el-form-item>
       <el-form-item label="Tags">
@@ -48,7 +48,7 @@ export default {
         title: '',
         issue_time: '',
         update_time: '',
-        tags: '',
+        tags: [],
         inputVisible: false,
         inputValue: '',
         content: ''
@@ -62,14 +62,16 @@ export default {
       this.axios
         .get(my.url + "/a/" + my.$route.params.aid)
         .then(function(resp) {
-          console.info(resp.data)
-          my.form.title = resp.data.title,
-          my.form.issue_time = resp.data.issue_time,
-          my.form.update_time = resp.data.update_time,
-          console.info(my.form.issue_time),
-          console.info(my.form.update_time),
-          my.form.tags = resp.data.tag.split(','),
+          my.form.title = resp.data.title
+          my.form.issue_time = resp.data.issue_time
+          my.form.update_time = resp.data.update_time
           my.form.content = resp.data.content
+
+          if (resp.data.tag == '') {
+            my.form.tags = []
+          } else {
+            my.form.tags = resp.data.tag.split(',')
+          }
         })
         .catch(function(err) {
           my.$notify.error({ title: "拉取文章失败", message: err.message });
@@ -83,9 +85,6 @@ export default {
       fd.append('content', my.form.content)
       fd.append('issueTime', my.form.issue_time)
       fd.append('updateTime', my.form.update_time)
-      
-      console.info(my.form.issue_time)
-      console.info(my.form.update_time)
 
       let config = {
         headers: {
@@ -96,18 +95,33 @@ export default {
 
       this.axios.put(my.url + "/admin/a/" + my.$route.params.aid, fd, config)
         .then(function(resp) {
-          my.$notify.error({ title: "提示", message: "编辑文章成功" });
+          my.$notify.success({ title: "提示", message: "编辑文章成功" });
           my.$router.push({
             path: "/article/list"
           });
         })
         .catch(function(err) {
-          my.$notify.error({ title: "编辑文章失败", message: err });
+          my.$notify.error({ title: "编辑文章失败", message: err.message });
         });
     },
 
     handleClose(tag) {
-      this.form.tags.splice(this.form.tags.indexOf(tag), 1);
+      var my = this;
+
+      let config = {
+        headers: {
+          "Authorization": "Bearer " + sessionStorage.getItem("key")
+        }
+      }
+
+      this.axios
+        .delete(my.url + "/admin/a/" + my.$route.params.aid + "/" + tag, config)
+        .then(function(resp) {
+          my.form.tags.splice(my.form.tags.indexOf(tag), 1);
+        })
+        .catch(function(err) {
+          my.$notify.error({ title: "删除标签失败", message: err.message });
+        });
     },
 
     showInput() {
@@ -118,12 +132,31 @@ export default {
     },
 
     handleInputConfirm() {
-      let inputValue = this.form.inputValue;
-      if (inputValue) {
-        this.form.tags.push(inputValue);
+      var my = this;
+
+      let tag = my.form.inputValue;
+      if (!tag) {
+        return;
       }
-      this.form.inputVisible = false;
-      this.form.inputValue = '';
+
+      let config = {
+        headers: {
+          "Authorization": "Bearer " + sessionStorage.getItem("key")
+        }
+      }
+
+      this.axios
+        .post(my.url + "/admin/a/" + my.$route.params.aid + "/" + tag, null, config)
+        .then(function(resp) {
+          if (tag) {
+            my.form.tags.push(tag);
+          }
+          my.form.inputVisible = false;
+          my.form.inputValue = '';
+        })
+        .catch(function(err) {
+          my.$notify.error({ title: "添加标签失败", message: err });
+        });
     }
   },
   mounted() {

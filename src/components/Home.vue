@@ -42,6 +42,13 @@
               path: "/"
             })
           }
+        },
+        updated() {
+          if (!sessionStorage.getItem("key")) {
+            this.$router.push({
+              path: "/"
+            })
+          }
         }
     };
 </script>

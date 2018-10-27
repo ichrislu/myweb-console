@@ -9,7 +9,7 @@
             <el-table-column label="操作" width="100">
               <template slot-scope="scope">
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="edit(scope.row.aid)"></el-button>
-                <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del(scope.row.aid)"></el-button>
+                <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del(scope.row.aid, scope.row.title)"></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -66,8 +66,8 @@ export default {
       });
     },
 
-    del(aid) {
-      this.$confirm("确认删除?", "提示", {
+    del(aid, title) {
+      this.$confirm(title, "确认删除", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

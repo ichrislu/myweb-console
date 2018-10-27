@@ -8,7 +8,7 @@
       </el-form-item>
       <el-form-item label="Time">
         <el-col :span="1">
-          <el-date-picker v-model="form.datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+          <el-date-picker v-model="form.datetime" type="datetime" value-format="yyyy-MM-ddTHH:mm:ss+08:00" placeholder="选择日期时间"></el-date-picker>
         </el-col>
       </el-form-item>
       <el-form-item label="Tags">
@@ -42,7 +42,7 @@ export default {
       form: {
         title: '',
         datetime: '',
-        tags: ['标签一', '标签二', '标签三'],
+        tags: [],
         inputVisible: false,
         inputValue: '',
         content: ''
@@ -68,7 +68,7 @@ export default {
 
       this.axios.post(my.url + "/admin/a", fd, config)
         .then(function(resp) {
-          my.$notify.error({ title: "提示", message: "添加文章成功" });
+          my.$notify.success({ title: "提示", message: "添加文章成功" });
           my.$router.push({
             path: "/article/list"
           });
