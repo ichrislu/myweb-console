@@ -10,6 +10,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "ajv": "^6.5.4",
+    "ajv-keywords": "^3.2.0",
     "axios": "^0.18.0",
     "element-ui": "^2.4.8",
     "mavon-editor": "^2.6.17",
