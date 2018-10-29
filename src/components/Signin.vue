@@ -11,7 +11,7 @@ export default {
 	data() {
 		return {
 			url: process.env.BASE_URL + '/authenticate',
-			key: 'C723C8FB14AF862562AF7E9A15891'
+			key: ''
 		};
 	},
 	methods: {
