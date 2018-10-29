@@ -1,125 +1,125 @@
 <template>
 	<div class="new-article">
-     <el-form ref="form" :model="form" label-width="50px">
-      <el-form-item label="Title">
-        <el-col :span="5">
-          <el-input v-model="form.title"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Time">
-        <el-col :span="1">
-          <el-date-picker v-model="form.datetime" type="datetime" value-format="yyyy-MM-ddTHH:mm:ss+08:00" placeholder="选择日期时间"></el-date-picker>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Tags">
-        <el-col :span="20">
-          <el-tag :key="tag" v-for="tag in form.tags" closable :disable-transitions="false" @close="handleClose(tag)">
-            {{tag}}
-          </el-tag>
-          <el-input class="input-new-tag" v-if="form.inputVisible" v-model="form.inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"></el-input>
-          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Content">
-        <el-col :span="20">
-          <mavon-editor v-model="form.content" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
-        </el-col>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Submit</el-button>
-        <el-button>Cancel</el-button>
-      </el-form-item>
-    </el-form>
+		 <el-form ref="form" :model="form" label-width="50px">
+			<el-form-item label="Title">
+				<el-col :span="5">
+					<el-input v-model="form.title"></el-input>
+				</el-col>
+			</el-form-item>
+			<el-form-item label="Time">
+				<el-col :span="1">
+					<el-date-picker v-model="form.datetime" type="datetime" value-format="yyyy-MM-ddTHH:mm:ss+08:00" placeholder="选择日期时间"></el-date-picker>
+				</el-col>
+			</el-form-item>
+			<el-form-item label="Tags">
+				<el-col :span="20">
+					<el-tag :key="tag" v-for="tag in form.tags" closable :disable-transitions="false" @close="handleClose(tag)">
+						{{tag}}
+					</el-tag>
+					<el-input class="input-new-tag" v-if="form.inputVisible" v-model="form.inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"></el-input>
+					<el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+				</el-col>
+			</el-form-item>
+			<el-form-item label="Content">
+				<el-col :span="20">
+					<mavon-editor v-model="form.content" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
+				</el-col>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" @click="onSubmit">Submit</el-button>
+				<el-button>Cancel</el-button>
+			</el-form-item>
+		</el-form>
 	</div>
 </template>
 
 <script>
 export default {
-  name: "NewArticle",
-  data() {
-    return {
-      url: process.env.BASE_URL,
-      form: {
-        title: '',
-        datetime: '',
-        tags: [],
-        inputVisible: false,
-        inputValue: '',
-        content: ''
-      }
-    };
-  },
-  methods: {
-    onSubmit() {
-      var my = this;
+	name: "NewArticle",
+	data() {
+		return {
+			url: process.env.BASE_URL,
+			form: {
+				title: '',
+				datetime: '',
+				tags: [],
+				inputVisible: false,
+				inputValue: '',
+				content: ''
+			}
+		};
+	},
+	methods: {
+		onSubmit() {
+			var my = this;
 
-      var fd = new FormData();
-      fd.append('title', my.form.title)
-      fd.append('content', my.form.content)
-      fd.append('time', my.form.datetime)
-      fd.append('tag', my.form.tags)
+			var fd = new FormData();
+			fd.append('title', my.form.title)
+			fd.append('content', my.form.content)
+			fd.append('time', my.form.datetime)
+			fd.append('tag', my.form.tags)
 
-      let config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          "Authorization": "Bearer " + sessionStorage.getItem("key")
-        }
-      }
+			let config = {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					"Authorization": "Bearer " + sessionStorage.getItem("key")
+				}
+			}
 
-      this.axios.post(my.url + "/admin/a", fd, config)
-        .then(function(resp) {
-          my.$notify.success({ title: "提示", message: "添加文章成功" });
-          my.$router.push({
-            path: "/article/list"
-          });
-        })
-        .catch(function(err) {
-          my.$notify.error({ title: "添加文章失败", message: err });
-        });
-    },
+			this.axios.post(my.url + "/admin/a", fd, config)
+				.then(function(resp) {
+					my.$notify.success({ title: "提示", message: "添加文章成功" });
+					my.$router.push({
+						path: "/article/list"
+					});
+				})
+				.catch(function(err) {
+					my.$notify.error({ title: "添加文章失败", message: err });
+				});
+		},
 
-    handleClose(tag) {
-      this.form.tags.splice(this.form.tags.indexOf(tag), 1);
-    },
+		handleClose(tag) {
+			this.form.tags.splice(this.form.tags.indexOf(tag), 1);
+		},
 
-    showInput() {
-      this.form.inputVisible = true;
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
-    },
+		showInput() {
+			this.form.inputVisible = true;
+			this.$nextTick(_ => {
+				this.$refs.saveTagInput.$refs.input.focus();
+			});
+		},
 
-    handleInputConfirm() {
-      let inputValue = this.form.inputValue;
-      if (inputValue) {
-        this.form.tags.push(inputValue);
-      }
-      this.form.inputVisible = false;
-      this.form.inputValue = '';
-    }
-  }
+		handleInputConfirm() {
+			let inputValue = this.form.inputValue;
+			if (inputValue) {
+				this.form.tags.push(inputValue);
+			}
+			this.form.inputVisible = false;
+			this.form.inputValue = '';
+		}
+	}
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .el-menu-vertical:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 400px;
+	width: 200px;
+	min-height: 400px;
 }
 .el-tag + .el-tag {
-  margin-left: 10px;
+	margin-left: 10px;
 }
 .button-new-tag {
-  margin-left: 10px;
-  height: 32px;
-  line-height: 30px;
-  padding-top: 0;
-  padding-bottom: 0;
+	margin-left: 10px;
+	height: 32px;
+	line-height: 30px;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 .input-new-tag {
-  width: 90px;
-  margin-left: 10px;
-  vertical-align: bottom;
+	width: 90px;
+	margin-left: 10px;
+	vertical-align: bottom;
 }
 </style>

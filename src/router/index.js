@@ -12,22 +12,22 @@ Vue.use(Router)
 Vue.use(mavonEditor)
 
 export default new Router({
-  mode: 'history',
-  routes: [
-    {
-      path: '/article',
-      name: 'HOME',
-      component: Home,
-      children: [
-        { path: '/article/list', component: ArticleList },
-        { path: '/article/new', component: NewArticle },
-        { path: '/article/edit/:aid', component: EditArticle }
-      ]
-    },
-    {
-      path: '/',
-      name: 'Signin',
-      component: Signin
-    },
-  ]
+	mode: 'history',
+	routes: [
+		{
+			path: '/article',
+			name: 'HOME',
+			component: Home,
+			children: [
+				{ path: '/article/list', component: ArticleList },
+				{ path: '/article/new', component: NewArticle },
+				{ path: '/article/edit/:aid', component: EditArticle }
+			]
+		},
+		{
+			path: '/',
+			name: 'Signin',
+			component: Signin
+		},
+	]
 })
