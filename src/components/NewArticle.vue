@@ -12,7 +12,7 @@
 				</el-col>
 			</el-form-item>
 			<el-form-item label="Tags">
-				<el-col :span="20">
+				<el-col :span="10">
 					<el-tag :key="tag" v-for="tag in form.tags" closable :disable-transitions="false" @close="handleClose(tag)">
 						{{tag}}
 					</el-tag>
@@ -27,7 +27,7 @@
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" @click="onSubmit">Submit</el-button>
-				<el-button>Cancel</el-button>
+				<el-button @click="onCancel">Cancel</el-button>
 			</el-form-item>
 		</el-form>
 	</div>
@@ -76,6 +76,9 @@ export default {
 				.catch(function(err) {
 					my.$notify.error({ title: "添加文章失败", message: err });
 				});
+		},
+		onCancel() {
+			this.$router.go(-1);
 		},
 
 		handleClose(tag) {

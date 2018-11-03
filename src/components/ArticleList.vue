@@ -1,20 +1,23 @@
 <template>
 	<div class="article-list">
-				<template>
-					<el-table :data="articles" stripe style="width: 100%">
-						<el-table-column prop="aid" label="ID" width="100"></el-table-column>
-						<el-table-column prop="title" label="标题"></el-table-column>
-						<el-table-column prop="issue_time" label="发布时间" width="200"></el-table-column>
-						<el-table-column prop="update_time" label="更新时间" width="200"></el-table-column>
-						<el-table-column label="操作" width="100">
-							<template slot-scope="scope">
-								<el-button type="primary" icon="el-icon-edit" size="mini" circle @click="edit(scope.row.aid)"></el-button>
-								<el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del(scope.row.aid, scope.row.title)"></el-button>
-							</template>
-						</el-table-column>
-					</el-table>
-				</template>
-				<el-pagination background small layout="total, prev, pager, next" :page-size="pageSize" :total="total" @current-change="handleCurrentChange"></el-pagination>
+		<el-col :span="5">
+			<el-input placeholder="搜索关键字" clearable v-model="key" @keyup.enter.native="search" @blur="search" @clear="getArticles"></el-input>
+		</el-col>
+		<template>
+			<el-table :data="articles" stripe style="width: 100%">
+				<el-table-column prop="aid" label="ID" width="100"></el-table-column>
+				<el-table-column prop="title" label="标题"></el-table-column>
+				<el-table-column prop="issue_time" label="发布时间" width="200"></el-table-column>
+				<el-table-column prop="update_time" label="更新时间" width="200"></el-table-column>
+				<el-table-column label="操作" width="100">
+					<template slot-scope="scope">
+						<el-button type="primary" icon="el-icon-edit" size="mini" circle @click="edit(scope.row.aid)"></el-button>
+						<el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del(scope.row.aid, scope.row.title)"></el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+		</template>
+		<el-pagination background small layout="total, prev, pager, next" :page-size="pageSize" :total="total" @current-change="handleCurrentChange"></el-pagination>
 	</div>
 </template>
 
@@ -23,6 +26,7 @@ export default {
 	name: "ArticleList",
 	data() {
 		return {
+			key: '',
 			pageIdx: 1,
 			pageSize: 10,
 			total: 0,
@@ -37,6 +41,7 @@ export default {
 			let params = {
 				t: my.$route.query.t,
 				lt: my.lastTime,
+				k: my.key,
 				pi: my.pageIdx,
 				ps: my.pageSize
 			};
@@ -50,6 +55,14 @@ export default {
 				.catch(function(err) {
 					my.$notify.error({ title: "拉取文章失败", message: err.message });
 				});
+		},
+
+		search() {
+			if (this.key == "") {
+				return;
+			}
+
+			this.getArticles();
 		},
 
 		handleCurrentChange(val) {
@@ -116,5 +129,9 @@ export default {
 .el-menu-vertical:not(.el-menu--collapse) {
 	width: 200px;
 	min-height: 400px;
+}
+
+.article-list div {
+	float: right;
 }
 </style>
