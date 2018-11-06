@@ -22,7 +22,7 @@
 			</el-form-item>
 			<el-form-item label="Content">
 				<el-col :span="20">
-					<mavon-editor v-model="form.content" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
+					<mavon-editor v-model="form.content" ref="md" :subfield="false" :boxShadow="false" defaultOpen="edit" @imgAdd="imgAdd" @imgDel="imgDel"/>
 				</el-col>
 			</el-form-item>
 			<el-form-item>
@@ -99,6 +99,35 @@ export default {
 			}
 			this.form.inputVisible = false;
 			this.form.inputValue = '';
+		},
+
+		imgAdd(pos, $file) {
+			var my = this;
+
+			// 第一步.将图片上传到服务器.
+			var formdata = new FormData();
+			formdata.append('file', $file);
+
+			let config = {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					"Authorization": "Bearer " + sessionStorage.getItem("key")
+				}
+			}
+
+			my.axios.post(my.url + "/admin/f", formdata, config)
+				.then((resp) => {
+					console.info("success:", resp.data);
+					my.$refs.md.$img2Url(pos, resp.data);
+				})
+				.catch(function(err) {
+					my.$notify.error({ title: "上传文件失败", message: err.message });
+				});
+		},
+
+		imgDel(pos) {
+			console.info(pos)
+			console.info(pos[0].name)
 		}
 	}
 };
