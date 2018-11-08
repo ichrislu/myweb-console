@@ -16,7 +16,7 @@ export default new Router({
 	routes: [
 		{
 			path: '/article',
-			name: 'HOME',
+			name: 'Home',
 			component: Home,
 			children: [
 				{ path: '/article/list', component: ArticleList },
