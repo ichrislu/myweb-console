@@ -45,7 +45,8 @@ export default {
 				tags: [],
 				inputVisible: false,
 				inputValue: '',
-				content: ''
+				content: '',
+				images: {}
 			}
 		};
 	},
@@ -58,6 +59,8 @@ export default {
 			fd.append('content', my.form.content)
 			fd.append('time', my.form.datetime)
 			fd.append('tag', my.form.tags)
+
+			console.info(my.form.content);
 
 			let config = {
 				headers: {
@@ -78,7 +81,7 @@ export default {
 				});
 		},
 		onCancel() {
-			this.$router.go(-1);
+			this.$router.back();
 		},
 
 		handleClose(tag) {
@@ -104,7 +107,6 @@ export default {
 		imgAdd(pos, $file) {
 			var my = this;
 
-			// 第一步.将图片上传到服务器.
 			var formdata = new FormData();
 			formdata.append('file', $file);
 
@@ -117,8 +119,10 @@ export default {
 
 			my.axios.post(my.url + "/admin/f", formdata, config)
 				.then((resp) => {
-					console.info("success:", resp.data);
-					my.$refs.md.$img2Url(pos, resp.data);
+					console.info("add:" + pos)
+					// my.$refs.md.$img2Url(pos, resp.data);
+					// my.$refs.md.$img2Url(resp.data, pos);
+					my.images[pos] = $file;
 				})
 				.catch(function(err) {
 					my.$notify.error({ title: "上传文件失败", message: err.message });
@@ -126,8 +130,30 @@ export default {
 		},
 
 		imgDel(pos) {
+			var my = this;
 			console.info(pos)
-			console.info(pos[0].name)
+			delete my.images[pos];
+			return;
+
+			var fd = new FormData();
+			fd.append('file', pos[1])
+
+			// delete的传参不一样
+			let config = {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					"Authorization": "Bearer " + sessionStorage.getItem("key")
+				},
+				data: fd
+			}
+
+			my.axios.delete(my.url + "/admin/f", config)
+				.then((resp) => {
+					console.info("success")
+				})
+				.catch(function(err) {
+					my.$notify.error({ title: "删除文件失败", message: err.message });
+				});
 		}
 	}
 };

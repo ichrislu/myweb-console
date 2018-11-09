@@ -92,6 +92,7 @@ export default {
 					Authorization: "Bearer " + sessionStorage.getItem("key")
 				};
 
+				// 此处多余
 				let params = {
 					aid: aid
 				};
