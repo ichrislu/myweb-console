@@ -17,7 +17,11 @@
 								<i class="el-icon-star-on"></i>
 								<span slot="title">Tags</span>
 							</el-menu-item>
-							<el-menu-item index="4">
+							<el-menu-item index="4" route="/picture">
+								<i class="el-icon-picture"></i>
+								<span slot="title">Picture</span>
+							</el-menu-item>
+							<el-menu-item index="5">
 								<i class="el-icon-refresh"></i>
 								<span slot="title" @click.stop="signout">Signout</span>
 							</el-menu-item>
@@ -58,5 +62,6 @@
 	.el-menu-vertical:not(.el-menu--collapse) {
 		width: 200px;
 		min-height: 400px;
+		text-align: right;
 	}
 </style>

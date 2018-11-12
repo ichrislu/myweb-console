@@ -5,11 +5,9 @@ import Home from '@/components/Home'
 import ArticleList from '@/components/ArticleList'
 import NewArticle from '@/components/NewArticle'
 import EditArticle from '@/components/EditArticle'
-import mavonEditor from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css'
+import Picture from '@/components/Picture'
 
 Vue.use(Router)
-Vue.use(mavonEditor)
 
 export default new Router({
 	mode: 'history',
@@ -21,7 +19,8 @@ export default new Router({
 			children: [
 				{ path: '/article/list', component: ArticleList },
 				{ path: '/article/new', component: NewArticle },
-				{ path: '/article/edit/:aid', component: EditArticle }
+				{ path: '/article/edit/:aid', component: EditArticle },
+				{ path: '/picture', component: Picture }
 			]
 		},
 		{

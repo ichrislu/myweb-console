@@ -45,9 +45,9 @@ export default {
 				tags: [],
 				inputVisible: false,
 				inputValue: '',
-				content: '',
-				images: {}
-			}
+				content: ''
+			},
+			images: {}
 		};
 	},
 	methods: {
@@ -120,9 +120,11 @@ export default {
 			my.axios.post(my.url + "/admin/f", formdata, config)
 				.then((resp) => {
 					console.info("add:" + pos)
-					// my.$refs.md.$img2Url(pos, resp.data);
-					// my.$refs.md.$img2Url(resp.data, pos);
-					my.images[pos] = $file;
+					console.log("resp:" + resp.data)
+					my.$refs.md.$img2Url(pos, resp.data);
+					my.images[pos] = resp.data;
+					console.log("my.images[0]:" + my.images[0])
+					console.log("my.images[1]:" + my.images[1])
 				})
 				.catch(function(err) {
 					my.$notify.error({ title: "上传文件失败", message: err.message });
@@ -131,12 +133,13 @@ export default {
 
 		imgDel(pos) {
 			var my = this;
-			console.info(pos)
-			delete my.images[pos];
-			return;
+			console.info("pos:" + pos)
+			var file = my.images[pos[1]];
+			console.log("file:" + file)
+			// return;
 
 			var fd = new FormData();
-			fd.append('file', pos[1])
+			fd.append('file', file)
 
 			// delete的传参不一样
 			let config = {
@@ -149,7 +152,8 @@ export default {
 
 			my.axios.delete(my.url + "/admin/f", config)
 				.then((resp) => {
-					console.info("success")
+					delete my.images[pos[1]];
+					console.info("del success")
 				})
 				.catch(function(err) {
 					my.$notify.error({ title: "删除文件失败", message: err.message });

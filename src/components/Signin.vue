@@ -10,7 +10,7 @@ export default {
 	name: 'Signin',
 	data() {
 		return {
-			url: process.env.BASE_URL + '/authenticate',
+			url: '/authenticate',
 			key: ''
 		};
 	},
