@@ -8,7 +8,7 @@ import VueShowdown from 'vue-showdown';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
-import ajax from '@/axios.js';
+// import ajax from '@/axios.js';
 
 import Vue from 'vue'
 import App from './App'
@@ -27,8 +27,7 @@ Vue.use(VueShowdown, {
 	openLinksInNewWindow: true,
 	headerLevelStart: 2
 })
-Vue.use(ajax)
-
+// Vue.use(ajax)
 const moment = require('moment')
 Vue.use(require('vue-moment'), {
     moment

@@ -1,26 +1,43 @@
 <template>
 	<div class="Picture">
-		<el-col>
-		<el-upload :action="url" :headers="headers" name="file" multiple list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-			<i class="el-icon-plus"></i>
-		</el-upload>
-		<el-dialog :visible.sync="dialogVisible">
-			<img width="100%" height="100%" :src="dialogImageUrl" alt="">
-		</el-dialog>
-		<datepicker :minimumView="'month'" :maximumView="'month'" :format="format" :disabledDates="disabledFn" :language="zh" :inline="true" @selected="handleSelected"></datepicker>
-		</el-col>
+		<el-row :gutter="20">
+			<el-col :span="5">
+				<div class="grid-content bg-purple">
+					<p>
+						<datepicker :minimumView="'month'" :maximumView="'month'" :format="format" :disabledDates="disabledFn" :language="zh" :inline="true" @selected="handleSelected"></datepicker>
+					</p>
+					<el-upload :action="url" :headers="headers" name="file" multiple list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+						<i class="el-icon-plus"></i>
+					</el-upload>
+					<el-dialog :visible.sync="dialogVisible">
+						<img width="100%" height="100%" :src="dialogImageUrl" alt="">
+					</el-dialog>
+				</div>
+			</el-col>
+			<el-col :span="18">
+				<div class="grid-content bg-purple">
+					<el-row>
+						<el-col :span="8" v-for="(item, key) in pics" :key="key" :offset="key > 0 ? 2 : 0">
+							<el-card :body-style="{ padding: '0px' }">
+								<img :src="''+item" class="image" @click="copyUrl">
+							</el-card>
+						</el-col>
+					</el-row>
+				</div>
+			</el-col>
+		</el-row>
 	</div>
 </template>
 
 <script>
-// 为什么会是在这里？
+// 为什么会是在这里？局部注册？
 import Datepicker from 'vuejs-datepicker';
 import {zh} from 'vuejs-datepicker/dist/locale'
 
 export default {
 	name: "Picture",
 	components: {
-	  Datepicker
+		Datepicker
 	},
 	data() {
 		var my = this;
@@ -30,9 +47,9 @@ export default {
 			dialogImageUrl: '',
 			dialogVisible: false,
 			url: process.env.BASE_URL + '/admin/p',
-			key: sessionStorage.getItem('key'),
 			format: "yy-MM",
 			cals: [],
+			pics: [],
 			disabledFn: {
 				customPredictor(date) {
 					var f = my.cals.indexOf(my.$moment(date).format('YYMM'))
@@ -40,7 +57,7 @@ export default {
 				}
 			},
 			headers: {
-				'Authorization': 'Bearer ' + my.key
+				'Authorization': 'Bearer ' + sessionStorage.getItem('key')
 			}
 		};
 	},
@@ -79,7 +96,7 @@ export default {
 
 			my.axios.get(my.url + "/" + folder, config)
 				.then((resp) => {
-					console.info(resp.data)
+					my.pics = resp.data
 				})
 				.catch(function(err) {
 					my.$notify.error({ title: "获取文件失败", message: err.message });
@@ -108,6 +125,10 @@ export default {
 					my.$notify.error({ title: "删除文件失败", message: err.message });
 				});
 		},
+		copyUrl(url) {
+			// todo copy url to clip
+			console.log()
+		}
 	},
 };
 </script>
