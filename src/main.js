@@ -32,7 +32,7 @@ Vue.use(ajax)
 const moment = require('moment')
 Vue.use(require('vue-moment'), {
     moment
-});
+})
 
 /* eslint-disable no-new */
 new Vue({
