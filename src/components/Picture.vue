@@ -1,23 +1,23 @@
 <template>
 	<div class="Picture">
-		<el-row :gutter="20">
-			<el-col :span="5">
+		<el-row :gutter="10">
+			<el-col :xs="4" :sm="6" :md="4" :lg="5" :xl="11">
 				<div class="grid-content bg-purple">
-					<p>
-						<datepicker :minimumView="'month'" :maximumView="'month'" :format="format" :disabledDates="disabledFn" :language="zh" :inline="true" @selected="handleSelected"></datepicker>
-					</p>
+					<datepicker :minimumView="'month'" :maximumView="'month'" :format="format" :disabledDates="disabledFn" :language="zh" :inline="true" @selected="handleSelected"></datepicker>
 				</div>
 			</el-col>
-			<el-col :span="5">
-				<el-upload :action="url+'/admin/p'" :headers="headers" name="file" multiple list-type="picture" :file-list="pics" drag show-file-list :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-					<i class="el-icon-upload"></i>
-					<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-				</el-upload>
-				<el-dialog :visible.sync="dialogVisible">
-					<div :data-clipboard-target="'#img'">
-						<img :src="dialogImageUrl" :data-clipboard-text="dialogImageUrl" class="img" id="img" @click="copy">
-					</div>
-				</el-dialog>
+			<el-col :push="2" :offset="5" :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+				<div class="grid-content bg-purple-light">
+					<el-upload :action="url+'/admin/p'" :headers="headers" name="file" multiple list-type="picture" :file-list="pics" drag show-file-list :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+						<i class="el-icon-upload"></i>
+						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+					</el-upload>
+					<el-dialog :visible.sync="dialogVisible" @click="copy('#'+dialogImageName)">
+						<div :data-clipboard-target="'#'+dialogImageName">
+							<img :src="dialogImageUrl" :data-clipboard-text="dialogImageUrl" :class="dialogImageName" :id="dialogImageName">
+						</div>
+					</el-dialog>
+				</div>
 			</el-col>
 		</el-row>
 	</div>
@@ -39,12 +39,13 @@ export default {
 
 		return {
 			zh: zh,
+			dialogImageName: '',
 			dialogImageUrl: '',
 			dialogVisible: false,
 			url: process.env.BASE_URL,
 			format: "yy-MM",
 			cals: [],
-			pics: [],//[{name:'2jda63gs.jpg', url:'http://localhost/pic/1811/2jda63gs.jpg'},{name:'6zu75ejt.png', url:'http://localhost/pic/1811/6zu75ejt.png'}],
+			pics: [],
 			disabledFn: {
 				customPredictor(date) {
 					var f = my.cals.indexOf(my.$moment(date).format('YYMM'))
@@ -56,12 +57,6 @@ export default {
 			}
 		};
 	},
-	// watch: {
-	// 	"pics" (curr, old) {
-	// 		console.log("old:" + old)
-	// 		console.log("curr:" + curr)
-	// 	}
-	// },
 	created() {
 		var my = this;
 
@@ -81,6 +76,7 @@ export default {
 	},
 	methods: {
 		handlePictureCardPreview(file) {
+			this.dialogImageName = file.name;
 			this.dialogImageUrl = file.url;
 			this.dialogVisible = true;
 		},
@@ -99,21 +95,10 @@ export default {
 				.then((resp) => {
 					console.log(resp.data)
 					var d = resp.data;
-					for (var v in d) {
-						var d2 = eval('('+d[v]+')')
-						for (var v2 in d2) {
-							// console.log("-----------" + d2[v2])
-						}
-					}
-
-					// var ary = eval('(' + resp.data + ')')
 					var data = resp.data
-					// var ary = eval('(' + resp.data + ')')
 					my.pics = [];
 					for (var i in data) {
 						var ary = eval('(' + data[i] + ')')
-						// for (var j in ary) {
-							// }
 						ary.url = my.url + '/pic/' + ary.url
 						console.log("name:" + ary.name)
 						console.log("url:" + ary.url)
@@ -150,15 +135,16 @@ export default {
 				});
 		},
 		copy() {
-			console.log(event.target.currentSrc)
-			var clipboard = new Clipboard('#img')
+			console.log(event.target.id)
+			var clipboard = new Clipboard('.'+event.target.id)
 			clipboard.on('success', e => {
 				console.log('复制成功')
 			})
 			clipboard.on('error', e => {
-				console.log('该浏览器不支持自动复制'+e)
+				console.log('该浏览器不支持自动复制')
 			})
 
+			console.log(clipboard)
 			clipboard.destroy()
 			console.log("======================")
 		}
@@ -168,4 +154,20 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.el-col {
+	border-radius: 4px;
+}
+.bg-purple-dark {
+	background: #99a9bf;
+}
+.bg-purple {
+	background: #d3dce6;
+}
+.bg-purple-light {
+	background: #e5e9f2;
+}
+.grid-content {
+	border-radius: 4px;
+	min-height: 36px;
+}
 </style>
