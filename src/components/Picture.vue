@@ -14,7 +14,9 @@
 					<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 				</el-upload>
 				<el-dialog :visible.sync="dialogVisible">
-					<img :src="dialogImageUrl" :data-clipboard-text="dialogImageUrl" @click="copy" class="img" id="img">
+					<div :data-clipboard-target="'#'+dialogImageUrl">
+						<img :src="dialogImageUrl" :data-clipboard-text="dialogImageUrl" :id="dialogImageUrl" @click="copy">
+					</div>
 				</el-dialog>
 			</el-col>
 		</el-row>
