@@ -6,24 +6,16 @@
 					<p>
 						<datepicker :minimumView="'month'" :maximumView="'month'" :format="format" :disabledDates="disabledFn" :language="zh" :inline="true" @selected="handleSelected"></datepicker>
 					</p>
-					<el-upload :action="url" :headers="headers" name="file" multiple list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-						<i class="el-icon-plus"></i>
-					</el-upload>
-					<el-dialog :visible.sync="dialogVisible">
-						<img width="100%" height="100%" :src="dialogImageUrl" alt="">
-					</el-dialog>
 				</div>
 			</el-col>
-			<el-col :span="18">
-				<div class="grid-content bg-purple">
-					<el-row>
-						<el-col :span="8" v-for="(item, key) in pics" :key="key" :offset="key > 0 ? 2 : 0">
-							<el-card :body-style="{ padding: '0px' }">
-								<img :src="''+item" class="image" @click="copyUrl">
-							</el-card>
-						</el-col>
-					</el-row>
-				</div>
+			<el-col :span="5">
+				<el-upload :action="url+'/admin/p'" :headers="headers" name="file" multiple list-type="picture" :file-list="pics" drag show-file-list :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+					<i class="el-icon-upload"></i>
+					<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+				</el-upload>
+				<el-dialog :visible.sync="dialogVisible">
+					<img :src="dialogImageUrl" :data-clipboard-text="dialogImageUrl" @click="copy" class="img" id="img">
+				</el-dialog>
 			</el-col>
 		</el-row>
 	</div>
@@ -33,6 +25,7 @@
 // 为什么会是在这里？局部注册？
 import Datepicker from 'vuejs-datepicker';
 import {zh} from 'vuejs-datepicker/dist/locale'
+import Clipboard from 'clipboard';
 
 export default {
 	name: "Picture",
@@ -46,10 +39,10 @@ export default {
 			zh: zh,
 			dialogImageUrl: '',
 			dialogVisible: false,
-			url: process.env.BASE_URL + '/admin/p',
+			url: process.env.BASE_URL,
 			format: "yy-MM",
 			cals: [],
-			pics: [],
+			pics: [],//[{name:'2jda63gs.jpg', url:'http://localhost/pic/1811/2jda63gs.jpg'},{name:'6zu75ejt.png', url:'http://localhost/pic/1811/6zu75ejt.png'}],
 			disabledFn: {
 				customPredictor(date) {
 					var f = my.cals.indexOf(my.$moment(date).format('YYMM'))
@@ -61,6 +54,12 @@ export default {
 			}
 		};
 	},
+	// watch: {
+	// 	"pics" (curr, old) {
+	// 		console.log("old:" + old)
+	// 		console.log("curr:" + curr)
+	// 	}
+	// },
 	created() {
 		var my = this;
 
@@ -70,7 +69,7 @@ export default {
 			}
 		}
 
-		my.axios.get(my.url, config)
+		my.axios.get(my.url + '/admin/p', config)
 			.then((resp) => {
 				my.cals = resp.data
 			})
@@ -94,9 +93,32 @@ export default {
 
 			var folder = this.$moment(date).format('YYMM');
 
-			my.axios.get(my.url + "/" + folder, config)
+			my.axios.get(my.url + '/admin/p/' + folder, config)
 				.then((resp) => {
-					my.pics = resp.data
+					console.log(resp.data)
+					var d = resp.data;
+					for (var v in d) {
+						var d2 = eval('('+d[v]+')')
+						for (var v2 in d2) {
+							// console.log("-----------" + d2[v2])
+						}
+					}
+
+					// var ary = eval('(' + resp.data + ')')
+					var data = resp.data
+					// var ary = eval('(' + resp.data + ')')
+					my.pics = [];
+					for (var i in data) {
+						var ary = eval('(' + data[i] + ')')
+						// for (var j in ary) {
+							// }
+						ary.url = my.url + '/pic/' + ary.url
+						console.log("name:" + ary.name)
+						console.log("url:" + ary.url)
+						my.pics.push(ary);
+					}
+
+					console.log(my.pics)
 				})
 				.catch(function(err) {
 					my.$notify.error({ title: "获取文件失败", message: err.message });
@@ -117,7 +139,7 @@ export default {
 				data: fd
 			}
 
-			my.axios.delete(my.url, config)
+			my.axios.delete(my.url + '/admin/p', config)
 				.then((resp) => {
 					console.info("del success")
 				})
@@ -125,9 +147,18 @@ export default {
 					my.$notify.error({ title: "删除文件失败", message: err.message });
 				});
 		},
-		copyUrl(url) {
-			// todo copy url to clip
-			console.log()
+		copy() {
+			console.log(event.target.currentSrc)
+			var clipboard = new Clipboard('#img')
+			clipboard.on('success', e => {
+				console.log('复制成功')
+			})
+			clipboard.on('error', e => {
+				console.log('该浏览器不支持自动复制'+e)
+			})
+
+			clipboard.destroy()
+			console.log("======================")
 		}
 	},
 };

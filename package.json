@@ -13,6 +13,7 @@
     "ajv": "^6.5.4",
     "ajv-keywords": "^3.2.0",
     "axios": "^0.18.0",
+    "clipboard": "^2.0.4",
     "element-ui": "^2.4.8",
     "mavon-editor": "^2.6.17",
     "vue": "^2.5.2",
