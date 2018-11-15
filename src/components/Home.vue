@@ -28,9 +28,7 @@
 						</el-menu>
 					</el-aside>
 					<div style="width: 100%">
-						<keep-alive>
-							<router-view></router-view>
-						</keep-alive>
+						<router-view></router-view>
 					</div>
 				</el-row>
 			</el-main>
