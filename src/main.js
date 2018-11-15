@@ -7,6 +7,7 @@ import axios from 'axios';
 import VueShowdown from 'vue-showdown';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import VueClipboards from 'vue-clipboards';
 
 // import ajax from '@/axios.js';
 
@@ -30,8 +31,10 @@ Vue.use(VueShowdown, {
 // Vue.use(ajax)
 const moment = require('moment')
 Vue.use(require('vue-moment'), {
-    moment
+	moment
 })
+
+Vue.use(VueClipboards);
 
 /* eslint-disable no-new */
 new Vue({

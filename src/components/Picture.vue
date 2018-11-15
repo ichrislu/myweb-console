@@ -2,22 +2,16 @@
 	<div class="Picture">
 		<el-row :gutter="10">
 			<el-col :xs="4" :sm="6" :md="4" :lg="5" :xl="11">
-				<div class="grid-content bg-purple">
-					<datepicker :minimumView="'month'" :maximumView="'month'" :format="format" :disabledDates="disabledFn" :language="zh" :inline="true" @selected="handleSelected"></datepicker>
-				</div>
+				<datepicker :minimumView="'month'" :maximumView="'month'" :format="format" :disabledDates="disabledFn" :language="zh" :inline="true" @selected="handleSelected"></datepicker>
 			</el-col>
 			<el-col :push="2" :offset="5" :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
-				<div class="grid-content bg-purple-light">
-					<el-upload :action="url+'/admin/p'" :headers="headers" name="file" multiple list-type="picture" :file-list="pics" drag show-file-list :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
-						<i class="el-icon-upload"></i>
-						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-					</el-upload>
-					<el-dialog :visible.sync="dialogVisible" @click="copy('#'+dialogImageName)">
-						<div :data-clipboard-target="'#'+dialogImageName">
-							<img :src="dialogImageUrl" :data-clipboard-text="dialogImageUrl" :class="dialogImageName" :id="dialogImageName">
-						</div>
-					</el-dialog>
-				</div>
+				<el-upload :action="url+'/admin/p'" :headers="headers" name="file" multiple list-type="picture" :file-list="pics" drag show-file-list :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+					<i class="el-icon-upload"></i>
+					<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+				</el-upload>
+				<el-dialog :visible.sync="dialogVisible">
+					<img :src="dialogImageUrl" v-clipboard="dialogImageUrl" @success="copySuccess" @error="copyError" style="cursor: pointer;">
+				</el-dialog>
 			</el-col>
 		</el-row>
 	</div>
@@ -27,7 +21,6 @@
 // 为什么会是在这里？局部注册？
 import Datepicker from 'vuejs-datepicker';
 import {zh} from 'vuejs-datepicker/dist/locale'
-import Clipboard from 'clipboard';
 
 export default {
 	name: "Picture",
@@ -93,19 +86,14 @@ export default {
 
 			my.axios.get(my.url + '/admin/p/' + folder, config)
 				.then((resp) => {
-					console.log(resp.data)
 					var d = resp.data;
 					var data = resp.data
 					my.pics = [];
 					for (var i in data) {
 						var ary = eval('(' + data[i] + ')')
 						ary.url = my.url + '/pic/' + ary.url
-						console.log("name:" + ary.name)
-						console.log("url:" + ary.url)
 						my.pics.push(ary);
 					}
-
-					console.log(my.pics)
 				})
 				.catch(function(err) {
 					my.$notify.error({ title: "获取文件失败", message: err.message });
@@ -134,19 +122,11 @@ export default {
 					my.$notify.error({ title: "删除文件失败", message: err.message });
 				});
 		},
-		copy() {
-			console.log(event.target.id)
-			var clipboard = new Clipboard('.'+event.target.id)
-			clipboard.on('success', e => {
-				console.log('复制成功')
-			})
-			clipboard.on('error', e => {
-				console.log('该浏览器不支持自动复制')
-			})
-
-			console.log(clipboard)
-			clipboard.destroy()
-			console.log("======================")
+		copySuccess() {
+			this.$notify.success({ title: "复制成功" });
+		},
+		copyError() {
+			this.$notify.error({ title: "复制失败" });
 		}
 	},
 };

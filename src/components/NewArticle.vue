@@ -60,8 +60,6 @@ export default {
 			fd.append('time', my.form.datetime)
 			fd.append('tag', my.form.tags)
 
-			console.info(my.form.content);
-
 			let config = {
 				headers: {
 					'Content-Type': 'multipart/form-data',
@@ -75,13 +73,28 @@ export default {
 					my.$router.push({
 						path: "/article/list"
 					});
+
+					this.form.title = '';
+					this.form.content = '';
+					this.form.datetime = '';
+					this.form.tags = [];
 				})
 				.catch(function(err) {
 					my.$notify.error({ title: "添加文章失败", message: err });
 				});
 		},
 		onCancel() {
-			this.$router.back();
+			this.form.title = '';
+			this.form.content = '';
+			this.form.datetime = '';
+			this.form.tags = [];
+
+			this.$router.push({
+				path: "/article/list",
+				// meta: {
+				// 	keepAlive: false // 不需要被缓存
+				// }
+			});
 		},
 
 		handleClose(tag) {
