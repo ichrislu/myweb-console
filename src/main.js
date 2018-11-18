@@ -45,3 +45,14 @@ new Vue({
 	},
 	template: '<App/>'
 })
+
+router.beforeEach((to, from, next) => {
+	if (sessionStorage.getItem("key") == null && to.fullPath != "/") {
+		next({
+			path: '/',
+			query: { redirect: to.fullPath }
+		})
+	} else {
+		next()
+	}
+})
