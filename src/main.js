@@ -28,13 +28,13 @@ Vue.use(VueShowdown, {
 	openLinksInNewWindow: true,
 	headerLevelStart: 2
 })
-// Vue.use(ajax)
 const moment = require('moment')
 Vue.use(require('vue-moment'), {
 	moment
 })
-
 Vue.use(VueClipboards);
+
+// Vue.use(ajax)
 
 /* eslint-disable no-new */
 new Vue({

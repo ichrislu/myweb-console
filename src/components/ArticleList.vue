@@ -7,7 +7,7 @@
 			<el-table :data="articles" stripe style="width: 100%">
 				<el-table-column prop="aid" label="ID" width="100"></el-table-column>
 				<el-table-column prop="title" label="标题"></el-table-column>
-				<el-table-column prop="issue_time" label="发布时间" width="200"></el-table-column>
+				<el-table-column prop="issue_time" :formatter="dateFormat" label="发布时间" width="200"></el-table-column>
 				<el-table-column prop="update_time" label="更新时间" width="200"></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template slot-scope="scope">
@@ -35,6 +35,14 @@ export default {
 		};
 	},
 	methods: {
+		dateFormat: function(row, column) {
+      console.log(row, column)
+      const date = row[column.property]
+      if (date === undefined) {
+        return ''
+      }
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
 		getArticles() {
 			var my = this;
 
