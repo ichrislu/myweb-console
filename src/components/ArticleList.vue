@@ -36,13 +36,14 @@ export default {
 	},
 	methods: {
 		dateFormat: function(row, column) {
-      console.log(row, column)
-      const date = row[column.property]
-      if (date === undefined) {
-        return ''
-      }
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
-    },
+			console.log(row, column)
+			const date = row[column.property]
+			if (date === undefined) {
+				return ''
+			}
+
+			return moment(date).format('YYYY-MM-DD HH:mm:ss')
+		},
 		getArticles() {
 			var my = this;
 
