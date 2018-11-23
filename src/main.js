@@ -3,13 +3,14 @@
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import axios from 'axios';
+// import { BackTop } from 'iview';
+import 'iview/dist/styles/iview.css';
 import VueShowdown from 'vue-showdown';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import VueClipboards from 'vue-clipboards';
-
-// import ajax from '@/axios.js';
+import axios from 'axios';
+import { get, post } from '@/axios.js'
 
 import Vue from 'vue'
 import App from './App'
@@ -17,6 +18,8 @@ import router from './router'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
+Vue.prototype.get = get
+Vue.prototype.post = post
 
 Vue.use(ElementUI)
 Vue.use(mavonEditor)

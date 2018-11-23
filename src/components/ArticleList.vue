@@ -31,12 +31,10 @@ export default {
 			pageSize: 10,
 			total: 0,
 			articles: [],
-			url: process.env.BASE_URL
 		};
 	},
 	methods: {
 		dateFormat: function(row, column) {
-			console.log(this)
 			const date = row[column.property]
 			if (date === undefined) {
 				return ''
@@ -48,21 +46,28 @@ export default {
 			var my = this;
 
 			let params = {
-				t: my.$route.query.t,
-				lt: my.lastTime,
-				k: my.key,
-				pi: my.pageIdx,
-				ps: my.pageSize
+				't': my.$route.query.t,
+				'k': my.key,
+				'lt': my.lastTime,
+				'ps': my.pageSize+"x",
+				'pi': my.pageIdx,
 			};
 
-			this.axios
-				.get(my.url + "/a", { params: params })
-				.then(function(resp) {
+			let loading = my.$loading({
+				fullscreen: true,
+				text: "loading..."
+			});
+
+			this.get('/a', params)
+				.then(resp => {
+					loading.close();
+
 					my.articles = resp.data.Articles;
 					my.total = resp.data.Total;
 				})
-				.catch(function(err) {
-					my.$notify.error({ title: "拉取文章失败", message: err.message });
+				.catch(error => {
+					loading.close();
+					// my.$notify.error({ title: "拉取文章失败", message: err.message });
 				});
 		},
 

@@ -10,7 +10,6 @@ export default {
 	name: 'Signin',
 	data() {
 		return {
-			url: process.env.BASE_URL + '/authenticate',
 			key: ''
 		};
 	},
@@ -21,13 +20,7 @@ export default {
 			var fd = new FormData();
 			fd.append('key', my.key)
 
-			let config = {
-				headers: {
-					'Content-Type': 'multipart/form-data'
-				}
-			}
-
-			this.axios.post(my.url, fd, config)
+			this.post('/authenticate', false, fd)
 				.then (function (resp) {
 					my.$notify({title: '成功', message: '认证成功', type: 'success'});
 					sessionStorage.setItem("key", my.key)

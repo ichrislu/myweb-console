@@ -1,0 +1,16 @@
+www
+	界面重构，响应式用rem
+	Article的返回用图钉做
+	
+	在vue-showdown元素里清除定义的所有样式
+
+console
+	Picture改手风琴
+		用iview边栏做
+		点击图片，复制url，关闭边栏；上传成功刷新手风琴
+	添加和编辑：页面添加Ctrl+Enter事件
+
+封装axios，还是需要封装primise
+	封装的实例是每次调用都创建，还是只创建一次？
+	封装参数是否可做成json，方便调用
+	实现header和cancelToken
