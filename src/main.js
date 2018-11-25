@@ -11,6 +11,7 @@ import 'mavon-editor/dist/css/index.css'
 import VueClipboards from 'vue-clipboards';
 import axios from 'axios';
 import { get, post } from '@/axios.js'
+import xhr from '@/axios.js'
 
 import Vue from 'vue'
 import App from './App'
@@ -37,7 +38,7 @@ Vue.use(require('vue-moment'), {
 })
 Vue.use(VueClipboards);
 
-// Vue.use(ajax)
+Vue.use(xhr)
 
 /* eslint-disable no-new */
 new Vue({

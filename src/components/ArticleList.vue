@@ -1,23 +1,29 @@
 <template>
-	<div class="article-list">
-		<el-col :span="5">
-			<el-input placeholder="搜索关键字" clearable v-model="key" @keyup.enter.native="search" @blur="search" @clear="getArticles"></el-input>
-		</el-col>
-		<template>
-			<el-table :data="articles" stripe style="width: 100%">
-				<el-table-column prop="aid" label="ID" width="100"></el-table-column>
-				<el-table-column prop="title" label="标题"></el-table-column>
-				<el-table-column prop="issue_time" :formatter="dateFormat" label="发布时间" width="200"></el-table-column>
-				<el-table-column prop="update_time" :formatter="dateFormat" label="更新时间" width="200"></el-table-column>
-				<el-table-column label="操作" width="100">
-					<template slot-scope="scope">
-						<el-button type="primary" icon="el-icon-edit" size="mini" circle @click="edit(scope.row.aid)"></el-button>
-						<el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del(scope.row.aid, scope.row.title)"></el-button>
-					</template>
-				</el-table-column>
-			</el-table>
-		</template>
-		<el-pagination background small layout="total, prev, pager, next" :page-size="pageSize" :total="total" @current-change="handleCurrentChange"></el-pagination>
+	<div>
+		<div class="search">
+			<el-col :span="50">
+				<el-input placeholder="搜索关键字" clearable v-model="key" @keyup.enter.native="search" @blur="search" @clear="getArticles"></el-input>
+			</el-col>
+		</div>
+		<div id="article-list">
+			<template>
+				<el-table :data="articles" stripe style="width: 100%">
+					<el-table-column prop="aid" label="ID" width="100"></el-table-column>
+					<el-table-column prop="title" label="标题"></el-table-column>
+					<el-table-column prop="issue_time" :formatter="dateFormat" label="发布时间" width="200"></el-table-column>
+					<el-table-column prop="update_time" :formatter="dateFormat" label="更新时间" width="200"></el-table-column>
+					<el-table-column label="操作" width="100">
+						<template slot-scope="scope">
+							<el-button type="primary" icon="el-icon-edit" size="mini" circle @click="edit(scope.row.aid)"></el-button>
+							<el-button type="danger" icon="el-icon-delete" size="mini" circle @click="del(scope.row.aid, scope.row.title)"></el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</template>
+		</div>
+		<div class="pager">
+			<el-pagination background small layout="total, prev, pager, next" :page-size="pageSize" :total="total" @current-change="handleCurrentChange"></el-pagination>
+		</div>
 	</div>
 </template>
 
@@ -28,7 +34,7 @@ export default {
 		return {
 			key: '',
 			pageIdx: 1,
-			pageSize: 10,
+			pageSize: 2,
 			total: 0,
 			articles: [],
 		};
@@ -49,25 +55,40 @@ export default {
 				't': my.$route.query.t,
 				'k': my.key,
 				'lt': my.lastTime,
-				'ps': my.pageSize+"x",
+				'ps': my.pageSize,
 				'pi': my.pageIdx,
 			};
 
-			let loading = my.$loading({
-				fullscreen: true,
-				text: "loading..."
-			});
+			let loadingConfig = {
+				target: '#article-list',
+				// fullscreen: false,
+				// lock: true,
+				// text: 'loading...',
+				// background: 'rgba(0, 0, 0, 0.5)'
+			}
 
-			this.get('/a', params)
+			let config = {
+				params: params,
+				timeout: 10000,
+				// headers: {'pf': 'true1'},
+				// handleError: false,
+				vue: my,
+				loading: true,
+				loadingConfig: loadingConfig,
+			}
+
+			this.get2('/a', config)
 				.then(resp => {
-					loading.close();
+					// loading.close();
 
-					my.articles = resp.data.Articles;
-					my.total = resp.data.Total;
+					if (resp) {
+						my.articles = resp.data.Articles;
+						my.total = resp.data.Total;
+					}
 				})
 				.catch(error => {
-					loading.close();
-					// my.$notify.error({ title: "拉取文章失败", message: err.message });
+					// loading.close();
+					// my.$notify.error({ title: "拉取文章失败", message: error.message });
 				});
 		},
 
@@ -145,8 +166,12 @@ export default {
 	width: 200px;
 	min-height: 400px;
 }
-
-.article-list div {
+.search div {
 	float: right;
+	margin-bottom: 10px;
+}
+.pager div {
+	float: right;
+	margin-top: 10px;
 }
 </style>
