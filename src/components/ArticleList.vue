@@ -34,7 +34,7 @@ export default {
 		return {
 			key: '',
 			pageIdx: 1,
-			pageSize: 2,
+			pageSize: 10,
 			total: 0,
 			articles: [],
 		};
@@ -49,7 +49,7 @@ export default {
 			return this.$moment(date).format('YYYY-MM-DD HH:mm:ss')
 		},
 		getArticles() {
-			var my = this;
+			let my = this;
 
 			let params = {
 				't': my.$route.query.t,
@@ -61,35 +61,27 @@ export default {
 
 			let loadingConfig = {
 				target: '#article-list',
-				// fullscreen: false,
-				// lock: true,
-				// text: 'loading...',
-				// background: 'rgba(0, 0, 0, 0.5)'
+				text: 'loading...',
+				// fullscreen: true,
+				// lock: false,
+				background: 'rgba(0, 0, 0, 0.7)'
 			}
 
 			let config = {
 				params: params,
 				timeout: 10000,
-				// headers: {'pf': 'true1'},
-				// handleError: false,
 				vue: my,
 				loading: true,
 				loadingConfig: loadingConfig,
 			}
 
-			this.get2('/a', config)
+			this.get('/a', config)
 				.then(resp => {
-					// loading.close();
-
 					if (resp) {
 						my.articles = resp.data.Articles;
 						my.total = resp.data.Total;
 					}
 				})
-				.catch(error => {
-					// loading.close();
-					// my.$notify.error({ title: "拉取文章失败", message: error.message });
-				});
 		},
 
 		search() {
@@ -123,32 +115,15 @@ export default {
 			.then(() => {
 				var my = this;
 
-				let headers = {
-					Authorization: "Bearer " + sessionStorage.getItem("key")
-				};
-
-				// 此处多余
-				let params = {
-					aid: aid
-				};
-
-				this.axios
-					.delete(
-						my.url + "/admin/a/" + aid,
-						{ headers: headers },
-						{ params: params }
-					)
-					.then(function(resp) {
+				this.delete("/admin/a/" + aid)
+					.then(resp => {
 						my.getArticles();
 						my.$notify.success({ title: "提示", message: "删除成功" });
 					})
-					.catch(function(err) {
-						my.$notify.error({ title: "失败", message: err.message });
-					});
 			})
-			.catch(err => {
-				if (err != "cancel") {
-					this.$notify.warning({ title: "异常", message: err.message });
+			.catch(error => {
+				if (error != "cancel") {
+					this.$notify.warning({ title: "异常", message: error.message });
 				}
 			});
 		}

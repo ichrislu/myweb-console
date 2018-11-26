@@ -18,10 +18,10 @@
 			</el-form-item>
 			<el-form-item label="Tags">
 				<el-col :span="10">
-					<el-tag :key="tag" v-for="tag in form.tags" closable :disable-transitions="false" @close="handleClose(tag)">
+					<el-tag :key="tag" v-for="tag in form.tags" closable :disable-transitions="false" @close="closeTag(tag)">
 						{{tag}}
 					</el-tag>
-					<el-input class="input-new-tag" v-if="form.inputVisible" v-model="form.inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"></el-input>
+					<el-input class="input-new-tag" v-if="form.inputVisible" v-model="form.inputValue" ref="saveTagInput" size="small" @keyup.enter.native="addTag" @blur="addTag"></el-input>
 					<el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
 				</el-col>
 			</el-form-item>
@@ -57,109 +57,70 @@ export default {
 	},
 	methods: {
 		getArticles() {
-			var my = this;
+			let my = this;
 
-			this.axios
-				.get(my.url + "/a/" + my.$route.params.aid)
-				.then(function(resp) {
+			this.get("/a/" + my.$route.params.aid)
+				.then(resp => {
 					my.form.title = resp.data.title
 					my.form.issue_time = resp.data.issue_time
 					my.form.update_time = resp.data.update_time
 					my.form.content = resp.data.content
 
-					if (resp.data.tag == '') {
+					if (resp.data.tag === '') {
 						my.form.tags = []
 					} else {
 						my.form.tags = resp.data.tag.split(',')
 					}
 				})
-				.catch(function(err) {
-					my.$notify.error({ title: "拉取文章失败", message: err.message });
-				});
 		},
 		onSubmit() {
-			var my = this;
+			let my = this;
 
-			var fd = new FormData();
-			fd.append('title', my.form.title)
-			fd.append('content', my.form.content)
-			fd.append('issueTime', my.form.issue_time)
-			fd.append('updateTime', my.form.update_time)
+			let data = new FormData();
+			data.append('title', my.form.title)
+			data.append('content', my.form.content)
+			data.append('issueTime', my.form.issue_time)
+			data.append('updateTime', my.form.update_time)
 
-			let config = {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					"Authorization": "Bearer " + sessionStorage.getItem("key")
-				}
-			}
-
-			this.axios.put(my.url + "/admin/a/" + my.$route.params.aid, fd, config)
-				.then(function(resp) {
+			this.put("/admin/a/" + my.$route.params.aid, data)
+				.then(resp => {
 					my.$notify.success({ title: "提示", message: "编辑文章成功" });
 					my.$router.push({
 						path: "/article/list"
 					});
 				})
-				.catch(function(err) {
-					my.$notify.error({ title: "编辑文章失败", message: err.message });
-				});
 		},
 		onCancel() {
 			this.$router.go(-1);
 		},
+		closeTag(tag) {
+			let my = this;
 
-		handleClose(tag) {
-			var my = this;
-
-			let config = {
-				headers: {
-					"Authorization": "Bearer " + sessionStorage.getItem("key")
-				}
-			}
-
-			this.axios
-				.delete(my.url + "/admin/a/" + my.$route.params.aid + "/" + tag, config)
-				.then(function(resp) {
+			this.delete(my.url + "/admin/a/" + my.$route.params.aid + "/" + tag)
+				.then(resp => {
 					my.form.tags.splice(my.form.tags.indexOf(tag), 1);
 				})
-				.catch(function(err) {
-					my.$notify.error({ title: "删除标签失败", message: err.message });
-				});
 		},
-
 		showInput() {
 			this.form.inputVisible = true;
 			this.$nextTick(_ => {
 				this.$refs.saveTagInput.$refs.input.focus();
 			});
 		},
-
-		handleInputConfirm() {
-			var my = this;
+		addTag() {
+			let my = this;
 
 			let tag = my.form.inputValue;
 			if (!tag) {
 				return;
 			}
 
-			let config = {
-				headers: {
-					"Authorization": "Bearer " + sessionStorage.getItem("key")
-				}
-			}
-
-			this.axios
-				.post(my.url + "/admin/a/" + my.$route.params.aid + "/" + tag, null, config)
-				.then(function(resp) {
-					if (tag) {
-						my.form.tags.push(tag);
-					}
+			this.post(my.url + "/admin/a/" + my.$route.params.aid + "/" + tag)
+				.then(resp => {
+					my.form.tags.push(tag);
 					my.form.inputVisible = false;
 					my.form.inputValue = '';
 				})
-				.catch(function(err) {
-					my.$notify.error({ title: "添加标签失败", message: err });
-				});
 		}
 	},
 	created() {

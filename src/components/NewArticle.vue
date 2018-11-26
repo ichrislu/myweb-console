@@ -22,7 +22,7 @@
 			</el-form-item>
 			<el-form-item label="Content">
 				<el-col :span="20">
-					<mavon-editor v-model="form.content" ref="md" :subfield="false" :boxShadow="false" defaultOpen="edit" @imgAdd="imgAdd" @imgDel="imgDel"/>
+					<mavon-editor v-model="form.content" ref="md" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
 				</el-col>
 			</el-form-item>
 			<el-form-item>
@@ -52,62 +52,36 @@ export default {
 	},
 	methods: {
 		onSubmit() {
-			var my = this;
+			let my = this;
 
-			var fd = new FormData();
-			fd.append('title', my.form.title)
-			fd.append('content', my.form.content)
-			fd.append('time', my.form.datetime)
-			fd.append('tag', my.form.tags)
+			let data = new FormData();
+			data.append('title', my.form.title)
+			data.append('content', my.form.content)
+			data.append('time', my.form.datetime)
+			data.append('tag', my.form.tags)
 
-			let config = {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					"Authorization": "Bearer " + sessionStorage.getItem("key")
-				}
-			}
-
-			this.axios.post(my.url + "/admin/a", fd, config)
-				.then(function(resp) {
-					my.$notify.success({ title: "提示", message: "添加文章成功" });
+			this.post("/admin/a", data)
+				.then(resp => {
+					my.$message.success({message: "添加文章成功"});
 					my.$router.push({
 						path: "/article/list"
 					});
-
-					this.form.title = '';
-					this.form.content = '';
-					this.form.datetime = '';
-					this.form.tags = [];
 				})
-				.catch(function(err) {
-					my.$notify.error({ title: "添加文章失败", message: err });
-				});
 		},
 		onCancel() {
-			this.form.title = '';
-			this.form.content = '';
-			this.form.datetime = '';
-			this.form.tags = [];
-
 			this.$router.push({
 				path: "/article/list",
-				// meta: {
-				// 	keepAlive: false // 不需要被缓存
-				// }
 			});
 		},
-
 		handleClose(tag) {
 			this.form.tags.splice(this.form.tags.indexOf(tag), 1);
 		},
-
 		showInput() {
 			this.form.inputVisible = true;
 			this.$nextTick(_ => {
 				this.$refs.saveTagInput.$refs.input.focus();
 			});
 		},
-
 		handleInputConfirm() {
 			let inputValue = this.form.inputValue;
 			if (inputValue) {
@@ -116,62 +90,53 @@ export default {
 			this.form.inputVisible = false;
 			this.form.inputValue = '';
 		},
+		// imgAdd(pos, $file) {
+		// 	var my = this;
 
-		imgAdd(pos, $file) {
-			var my = this;
+		// 	var data = new FormData();
+		// 	data.append('file', $file);
 
-			var formdata = new FormData();
-			formdata.append('file', $file);
+		// 	this.post("/admin/f", data)
+		// 		.then(resp => {
+		// 			console.info("add:" + pos)
+		// 			console.log("resp:" + resp.data)
+		// 			my.$refs.md.$img2Url(pos, resp.data);
+		// 			my.images[pos] = resp.data;
+		// 			console.log("my.images[0]:" + my.images[0])
+		// 			console.log("my.images[1]:" + my.images[1])
+		// 		})
+		// 		.catch(function(err) {
+		// 			my.$notify.error({ title: "上传文件失败", message: err.message });
+		// 		});
+		// },
+		// imgDel(pos) {
+		// 	var my = this;
+		// 	console.info("pos:" + pos)
+		// 	var file = my.images[pos[1]];
+		// 	console.log("file:" + file)
+		// 	// return;
 
-			let config = {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					"Authorization": "Bearer " + sessionStorage.getItem("key")
-				}
-			}
+		// 	var data = new Data();
+		// 	data.append('file', file)
 
-			my.axios.post(my.url + "/admin/f", formdata, config)
-				.then((resp) => {
-					console.info("add:" + pos)
-					console.log("resp:" + resp.data)
-					my.$refs.md.$img2Url(pos, resp.data);
-					my.images[pos] = resp.data;
-					console.log("my.images[0]:" + my.images[0])
-					console.log("my.images[1]:" + my.images[1])
-				})
-				.catch(function(err) {
-					my.$notify.error({ title: "上传文件失败", message: err.message });
-				});
-		},
+		// 	// delete的传参不一样
+		// 	let config = {
+		// 		headers: {
+		// 			'Content-Type': 'multipart/form-data',
+		// 			"Authorization": "Bearer " + sessionStorage.getItem("key")
+		// 		},
+		// 		data: data
+		// 	}
 
-		imgDel(pos) {
-			var my = this;
-			console.info("pos:" + pos)
-			var file = my.images[pos[1]];
-			console.log("file:" + file)
-			// return;
-
-			var fd = new FormData();
-			fd.append('file', file)
-
-			// delete的传参不一样
-			let config = {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					"Authorization": "Bearer " + sessionStorage.getItem("key")
-				},
-				data: fd
-			}
-
-			my.axios.delete(my.url + "/admin/f", config)
-				.then((resp) => {
-					delete my.images[pos[1]];
-					console.info("del success")
-				})
-				.catch(function(err) {
-					my.$notify.error({ title: "删除文件失败", message: err.message });
-				});
-		}
+		// 	my.axios.delete(my.url + "/admin/f", config)
+		// 		.then((resp) => {
+		// 			delete my.images[pos[1]];
+		// 			console.info("del success")
+		// 		})
+		// 		.catch(function(err) {
+		// 			my.$notify.error({ title: "删除文件失败", message: err.message });
+		// 		});
+		// },
 	}
 };
 </script>

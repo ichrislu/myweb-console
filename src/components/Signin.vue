@@ -15,28 +15,29 @@ export default {
 	},
 	methods: {
 		signin() {
-			var my = this;
+			let my = this;
 
-			var fd = new FormData();
-			fd.append('key', my.key)
+			let data = new FormData();
+			data.append('key', my.key)
 
-			this.post('/authenticate', false, fd)
-				.then (function (resp) {
-					my.$notify({title: '成功', message: '认证成功', type: 'success'});
+			let config = {
+				handleError: false,
+			}
+
+			this.post('/authenticate', data, config)
+				.then (resp => {
+					my.$message.success({message: '认证成功'});
 					sessionStorage.setItem("key", my.key)
 					my.$router.push({
 						path: "article/list"
 					});
 				})
 				.catch (function (err) {
-					my.$notify.error({title: '认证失败', message: err.message});
+					my.$message.error({message: err.message});
 					my.$refs.key.focus();
 					my.key = '';
 				})
 		}
-	},
-	init() {
-
 	}
 }
 </script>
@@ -47,6 +48,10 @@ export default {
 	width: 300px;
 	align-content: center;
 	/* margin:auto auto; */
-	left:50%;top:50%;position: absolute;margin-left:-200px;margin-top:-100px
+	left: 50%;
+	top: 50%;
+	position: absolute;
+	margin-left:-200px;
+	margin-top:-100px;
 }
 </style>
