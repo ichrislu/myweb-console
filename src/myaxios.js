@@ -12,7 +12,6 @@
  */
 
 import axios from 'axios'
-// import qs from 'qs'
 import { Message } from 'element-ui';
 import { Loading } from 'element-ui';
 
@@ -39,7 +38,7 @@ let loadingAry = [];
 
 let xhr = axios.create({
 	baseURL: process.env.BASE_URL,
-	timeout: 15000,
+	timeout: 10000,
 	headers: {
 		'X-Requested-With': 'XMLHttpRequest'
 	}
@@ -164,9 +163,10 @@ xhr.interceptors.response.use(response => {
 	return Promise.reject(error)
 })
 
-// 这个导出方式可能比较好
+// install方法第一个参数是 Vue 构造器，第二个参数是一个可选的选项对象
 export default {
 	install: function (Vue) {
+		Vue.prototype.request = (config) => xhr.request(config)
 		Vue.prototype.get = (url, config) => xhr.get(url, config)
 		Vue.prototype.post = (url, data, config) => xhr.post(url, data, config)
 		Vue.prototype.put = (url, data, config) => xhr.put(url, data, config)

@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import qs from 'qs'
+
 export default {
 	name: 'Signin',
 	data() {
@@ -17,8 +19,9 @@ export default {
 		signin() {
 			let my = this;
 
-			let data = new FormData();
-			data.append('key', my.key)
+			// let data = new FormData();
+			// data.append('key', my.key)
+			let data = qs.stringify({'key': my.key})
 
 			let config = {
 				handleError: false,
@@ -32,7 +35,7 @@ export default {
 						path: "article/list"
 					});
 				})
-				.catch (function (err) {
+				.catch (err => {
 					my.$message.error({message: err.message});
 					my.$refs.key.focus();
 					my.key = '';

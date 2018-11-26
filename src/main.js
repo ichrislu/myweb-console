@@ -5,39 +5,25 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 // import { BackTop } from 'iview';
 // import 'iview/dist/styles/iview.css';
-// import VueShowdown from 'vue-showdown';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import VueClipboards from 'vue-clipboards';
-// import axios from 'axios';
-// import { get, post } from '@/axios.js'
-import xhr from '@/xhr.js'
+import myaxios from '@/myaxios.js'
 
 import Vue from 'vue'
 import App from './App'
 import router from './router'
 
 Vue.config.productionTip = false
-// Vue.prototype.axios = axios
-// Vue.prototype.get = get
-// Vue.prototype.post = post
 
 Vue.use(ElementUI)
 Vue.use(mavonEditor)
-// Vue.use(VueShowdown, {
-// 	emoji: true,
-// 	tables: true,
-// 	strikethrough: true,
-// 	tasklists: true,
-// 	openLinksInNewWindow: true,
-// 	headerLevelStart: 2
-// })
 const moment = require('moment')
 Vue.use(require('vue-moment'), {
 	moment
 })
 Vue.use(VueClipboards);
-Vue.use(xhr)
+Vue.use(myaxios)
 
 /* eslint-disable no-new */
 new Vue({
