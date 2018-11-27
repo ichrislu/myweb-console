@@ -12,8 +12,7 @@
  */
 
 import axios from 'axios'
-import { Message } from 'element-ui';
-import { Loading } from 'element-ui';
+import { Message, Loading } from 'element-ui';
 
 // let cancel ,promiseArr = {}
 // const CancelToken = axios.CancelToken;
@@ -31,8 +30,7 @@ let $loading = true;
 // let $vue = undefined;
 ////////////////////////////////////////
 
-// loading对象存储相关，主要解决设置target的时候，loading对象非单实例问题
-// let loadingObj = null;
+// loading对象存储相关，主要解决设置loading.target的时候，loading对象非单实例问题。但是还不是很懂为什么！
 let loadingCounter = 0;
 let loadingAry = [];
 
@@ -48,6 +46,23 @@ if (sessionStorage.getItem("key")) {
 	xhr.defaults.headers.common['Authorization'] = 'Bearer ' + sessionStorage.getItem("key");
 }
 
+function showLoading(config) {
+	if ($loading === undefined || $loading) {
+		loadingCounter++
+		let loadingObj = Loading.service(config)
+		loadingAry.push(loadingObj)
+	}
+}
+
+function hideLoading() {
+	if ($loading === undefined || $loading) {
+		loadingCounter--
+		if (!loadingCounter) {
+			loadingAry.forEach(item=>item.close())
+		}
+	}
+}
+
 // xhr.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 // 默认就是这样，好像并非如此！
@@ -55,16 +70,9 @@ if (sessionStorage.getItem("key")) {
 
 //请求拦截器，config为传过来的所有参数
 xhr.interceptors.request.use(config => {
-	// 在请求发送之前做一些事
-
 	// $vue = config.vue;
 	$handleError = config.handleError;
 	$loading = config.loading;
-
-	// 有空测试以下，这是一个很好应用思路
-	// if (config.method === "post") {
-	// 	config.data = qs.stringify(config.data)
-	// }
 
 	//发起请求时，取消掉当前正在进行的相同请求
 	// if (promiseArr[config.url]) {
@@ -74,25 +82,12 @@ xhr.interceptors.request.use(config => {
 	// 	promiseArr[config.url] = cancel
 	// }
 
-	// console.log(loadingCounter, loadingAry)
-	if ($loading === undefined || $loading) {
-		loadingCounter++
-		let loadingObj = Loading.service(config.loadingConfig)
-		loadingAry.push(loadingObj)
-		// console.log("+++++++++++++++")
-	}
-	// console.log(loadingCounter, loadingAry)
+	showLoading(config.loadingConfig)
 
 	// console.log("interceptors.request.config", config)
 	return config
 }, error => {
-	if ($loading === undefined || $loading) {
-		loadingCounter--
-		if (!loadingCounter) {
-			loadingAry.forEach(item=>item.close())
-		}
-		// console.log("--------------")
-	}
+	hideLoading()
 
 	// console.log("interceptors.request.error", config)
 	Promise.reject(error)
@@ -100,40 +95,20 @@ xhr.interceptors.request.use(config => {
 
 //响应拦截器即异常处理
 xhr.interceptors.response.use(response => {
+	hideLoading()
+
 	// console.log("interceptors.response.response", response);
-
-	// loadingObj.close();
-	if ($loading === undefined || $loading) {
-		loadingCounter--
-		if (!loadingCounter) {
-			loadingAry.forEach(item=>item.close())
-		}
-		// console.log("--------------")
-	}
-
 	return response
 }, error => {
 	/**
-	 * 满足条件：
+	 * 已测试过满足的条件：
 	 * 网络出错，比如关闭服务端，会提示：Network Error，此时满足error.request
 	 * 服务端处理失败，比如参数类型转换失败，会提示500错误，此时满足error.response
 	 * 因为调用参数不当，比如导致内部数组越界，此时满足error(else)，很典型的就是loading设置target时非单实例，按网上做法但设置的target不存在或不正确的时候
 	 */
-	// console.log("$vue", $vue);
-	// console.log(loadingCounter, loadingAry)
+	hideLoading()
 
-	// loadingObj.close();
-	if ($loading === undefined || $loading) {
-		loadingCounter--
-		if (!loadingCounter) {
-			loadingAry.forEach(item=>item.close())
-		}
-		// console.log("--------------")
-	}
-
-	// console.log(loadingCounter, loadingAry)
-
-	// 在何种场景下需要做以下区别？
+	// 在何种场景下需要做以下区别？？？
 	if (error.response) {
 		// The request was made and the server responded with a status code
 		// that falls out of the range of 2xx
