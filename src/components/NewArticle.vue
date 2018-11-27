@@ -22,7 +22,7 @@
 			</el-form-item>
 			<el-form-item label="Content">
 				<el-col :span="20">
-					<mavon-editor v-model="form.content" ref="md" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
+					<mavon-editor v-model="form.content" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
 				</el-col>
 			</el-form-item>
 			<el-form-item>
@@ -69,9 +69,7 @@ export default {
 				})
 		},
 		onCancel() {
-			this.$router.push({
-				path: "/article/list",
-			});
+			this.$router.go(-1);
 		},
 		handleClose(tag) {
 			this.form.tags.splice(this.form.tags.indexOf(tag), 1);
