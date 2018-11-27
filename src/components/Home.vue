@@ -5,23 +5,23 @@
 				<el-row type="flex">
 					<el-aside>
 						<el-menu router class="el-menu-vertical">
-							<el-menu-item index="1" route="/article/list">
+							<el-menu-item index="/article/list">
 								<i class="el-icon-document"></i>
 								<span slot="title">All Articles</span>
 							</el-menu-item>
-							<el-menu-item index="2" route="/article/new">
+							<el-menu-item index="/article/new">
 								<i class="el-icon-news"></i>
 								<span slot="title">New Article</span>
 							</el-menu-item>
-							<el-menu-item index="3" disabled>
+							<el-menu-item index="/tag" disabled>
 								<i class="el-icon-star-on"></i>
 								<span slot="title">Tags</span>
 							</el-menu-item>
-							<el-menu-item index="4" route="/picture">
+							<el-menu-item index="/picture">
 								<i class="el-icon-picture"></i>
 								<span slot="title">Picture</span>
 							</el-menu-item>
-							<el-menu-item index="5">
+							<el-menu-item index="">
 								<i class="el-icon-refresh"></i>
 								<span slot="title" @click.stop="signout">Signout</span>
 							</el-menu-item>

@@ -5,14 +5,13 @@ www
 	在vue-showdown元素里清除定义的所有样式
 
 console
-	调用this.$router.push({})或go(-1)时，页面的<el-menu-item index="1" route="/article/list">颜色不会有变化
-	有时候点Signout（跟click事件有关，很奇怪）
+	调用this.$router.push({})或go(-1)时，页面的<el-menu-item index="1" route="/article/list">颜色不会有变化，界面刷新会高亮最后一个Signout
 	自己封装的axios怎么在不同项目间共用？只能通过复制源码？
 	关于cancelToken原理以及用法
 
-	Picture改手风琴
-		用iview边栏做
-		点击图片，复制url，关闭边栏；上传成功刷新手风琴
+	Picture改Dialog
+		图片显示在Dialog中再弹出Dialog
+		点击图片，复制url，关闭边栏；上传成功刷新手风琴，可上传不可删除
 	添加和编辑：页面添加Ctrl+Enter事件
 
 封装axios，还是需要封装primise
