@@ -1,18 +1,18 @@
 www
-	�����ع�����Ӧʽ��rem
-	Article�ķ�����ͼ����
+	界面重构，响应式用rem
+	Article的返回用图钉做
 
-	��vue-showdownԪ������������������ʽ
+	在vue-showdown元素里清除定义的所有样式
 
 console
-	����this.$router.push({})��go(-1)ʱ��ҳ���<el-menu-item index="1" route="/article/list">��ɫ�����б仯������ˢ�»�������һ��Signout
-	�Լ���װ��axios��ô�ڲ�ͬ��Ŀ�乲�ã�ֻ��ͨ������Դ�룿
-	����cancelTokenԭ���Լ��÷�
+	调用this.$router.push({})或go(-1)时，页面的<el-menu-item index="1" route="/article/list">颜色不会有变化，界面刷新会高亮最后一个Signout
+	自己封装的axios怎么在不同项目间共用？只能通过复制源码？
+	关于cancelToken原理以及用法
 
-	Picture��Dialog
-		ͼƬ��ʾ��Dialog���ٵ���Dialog
-		���ͼƬ������url���رձ������ϴ��ɹ�ˢ���ַ��٣����ϴ�����ɾ��
-	���Ӻͱ༭��ҳ������Ctrl+Enter�¼�
+	Picture改Dialog
+		图片显示在Dialog中再弹出Dialog
+		点击图片，复制url，关闭边栏；上传成功刷新手风琴，可上传不可删除
+	添加和编辑：页面添加Ctrl+Enter事件
 
-��װaxios��������Ҫ��װprimise
-	ʵ��cancelToken
+封装axios，还是需要封装primise
+	实现cancelToken
