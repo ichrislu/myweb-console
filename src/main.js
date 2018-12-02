@@ -3,6 +3,8 @@
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import {Affix} from 'iview';
+import 'iview/dist/styles/iview.css';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import VueClipboards from 'vue-clipboards';
@@ -21,6 +23,8 @@ Vue.use(require('vue-moment'), {
 	moment
 })
 Vue.use(VueClipboards);
+
+Vue.component('Affix', Affix);
 Vue.use(myaxios)
 
 /* eslint-disable no-new */

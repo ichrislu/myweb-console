@@ -26,10 +26,12 @@
 				</el-col>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" @click="onSubmit">Submit</el-button>
-				<el-button @click="onCancel">Cancel</el-button>
 			</el-form-item>
 		</el-form>
+				<Affix :offset-top="500">
+				<el-button type="primary" @click="onSubmit">Submit</el-button>
+				<el-button @click="onCancel">Cancel</el-button>
+				</Affix>
 	</div>
 </template>
 
@@ -47,7 +49,7 @@ export default {
 				inputValue: '',
 				content: ''
 			},
-			images: {}
+			// images: {}
 		};
 	},
 	methods: {

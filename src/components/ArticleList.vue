@@ -2,7 +2,7 @@
 	<div>
 		<div class="search">
 			<el-col :span="50">
-				<el-input placeholder="搜索关键字" clearable v-model="key" @keyup.enter.native="search" @blur="search" @clear="getArticles"></el-input>
+				<el-input placeholder="搜索关键字" clearable v-model="key" size="mini" @keyup.enter.native="search" @blur="search" @clear="getArticles"></el-input>
 			</el-col>
 		</div>
 		<div id="article-list">
@@ -143,7 +143,7 @@ export default {
 }
 .search div {
 	float: right;
-	margin-bottom: 10px;
+	margin-bottom: 0px;
 }
 .pager div {
 	float: right;
