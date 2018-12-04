@@ -25,13 +25,20 @@
 					<mavon-editor v-model="form.content" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
 				</el-col>
 			</el-form-item>
-			<el-form-item>
-			</el-form-item>
 		</el-form>
-				<Affix :offset-top="500">
-				<el-button type="primary" @click="onSubmit">Submit</el-button>
-				<el-button @click="onCancel">Cancel</el-button>
-				</Affix>
+		<Affix :offset-bottom="300" class="btn">
+			<el-button size="small" @click="showFolder">Picture</el-button>
+			<el-button size="small" type="primary" @click="onSubmit">Submit</el-button>
+			<el-button size="small" @click="onCancel">Cancel</el-button>
+		</Affix>
+
+		<el-dialog title="Folder" :visible.sync="outerVisible" fullscreen>
+			<el-collapse accordion v-for="(item, key) in folders" :key="key">
+				<el-collapse-item :title="key" :name="key">
+					<img :src="'http://localhost/pic/'+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="process.env.BASE_URL+'/pic/'+key+'/'+si"  @success="copySuccess" @error="copyError" style="cursor: pointer;">
+				</el-collapse-item>
+			</el-collapse>
+		</el-dialog>
 	</div>
 </template>
 
@@ -40,7 +47,7 @@ export default {
 	name: "NewArticle",
 	data() {
 		return {
-			url: process.env.BASE_URL,
+			outerVisible: false,
 			form: {
 				title: '',
 				datetime: '',
@@ -49,10 +56,26 @@ export default {
 				inputValue: '',
 				content: ''
 			},
-			// images: {}
+			folders: [],
 		};
 	},
 	methods: {
+		showFolder() {
+			var my = this;
+
+			my.outerVisible = true
+
+			this.get('/p')
+				.then((resp) => {
+					my.folders = resp.data;
+				})
+		},
+		copySuccess() {
+			this.$notify.success({ title: "复制成功" });
+		},
+		copyError() {
+			this.$notify.error({ title: "复制失败" });
+		},
 		onSubmit() {
 			let my = this;
 
@@ -161,5 +184,11 @@ export default {
 	width: 90px;
 	margin-left: 10px;
 	vertical-align: bottom;
+}
+.new-article {
+
+}
+.btn {
+	margin-left: 90%;
 }
 </style>
