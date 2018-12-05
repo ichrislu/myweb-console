@@ -27,7 +27,7 @@
 			</el-form-item>
 		</el-form>
 		<Affix :offset-bottom="300" class="btn">
-			<el-button size="small" @click="showFolder">Picture</el-button>
+			<el-button size="small" @click="showPicture">Picture</el-button>
 			<el-button size="small" type="primary" @click="onSubmit">Submit</el-button>
 			<el-button size="small" @click="onCancel">Cancel</el-button>
 		</Affix>
@@ -35,7 +35,7 @@
 		<el-dialog title="Folder" :visible.sync="outerVisible" fullscreen>
 			<el-collapse accordion v-for="(item, key) in folders" :key="key">
 				<el-collapse-item :title="key" :name="key">
-					<img :src="'http://localhost/pic/'+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="process.env.BASE_URL+'/pic/'+key+'/'+si"  @success="copySuccess" @error="copyError" style="cursor: pointer;">
+					<img :src="baseUrl+'/pic/'+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="baseUrl+'/pic/'+key+'/'+si"  @success="copySuccess" @error="copyError" style="cursor: pointer;">
 				</el-collapse-item>
 			</el-collapse>
 		</el-dialog>
@@ -48,6 +48,7 @@ export default {
 	data() {
 		return {
 			outerVisible: false,
+			baseUrl: process.env.BASE_URL,
 			form: {
 				title: '',
 				datetime: '',
@@ -60,12 +61,12 @@ export default {
 		};
 	},
 	methods: {
-		showFolder() {
+		showPicture() {
 			var my = this;
 
 			my.outerVisible = true
 
-			this.get('/p')
+			this.get('/admin/p')
 				.then((resp) => {
 					my.folders = resp.data;
 				})
@@ -189,6 +190,7 @@ export default {
 
 }
 .btn {
+	width: 100px;
 	margin-left: 90%;
 }
 </style>
