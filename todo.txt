@@ -8,6 +8,7 @@ console
 	调用this.$router.push({})或go(-1)时，页面的<el-menu-item index="1" route="/article/list">颜色不会有变化，界面刷新会高亮最后一个Signout
 	自己封装的axios怎么在不同项目间共用？只能通过复制源码？
 	关于cancelToken原理以及用法
+	数据库保存的内容：Let's%20Encrypt，前端跳转显示：Let%27s%2520Encrypt，后者可能无解
 
 	Picture改Dialog
 		图片显示在Dialog中再弹出Dialog
@@ -16,3 +17,9 @@ console
 
 封装axios，还是需要封装primise
 	实现cancelToken
+
+OPTIONS请求
+https://www.cnblogs.com/virtual/p/3720750.html
+https://www.jianshu.com/p/5cf82f092201
+http://stylechen.com/options-cors.html?utm_source=tuicool&utm_medium=referral
+https://segmentfault.com/q/1010000012673414
