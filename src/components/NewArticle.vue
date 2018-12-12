@@ -33,6 +33,9 @@
 		</Affix>
 
 		<el-dialog title="Folder" :visible.sync="outerVisible" fullscreen>
+			<el-upload :action="baseUrl+'/admin/p'" multiple :file-list="fileList">
+				<el-button size="small" type="primary">点击上传</el-button>
+			</el-upload>
 			<el-collapse accordion v-for="(item, key) in folders" :key="key">
 				<el-collapse-item :title="key" :name="key">
 					<img :src="baseUrl+'/pic/'+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="baseUrl+'/pic/'+key+'/'+si"  @success="copySuccess" @error="copyError" style="cursor: pointer;">
@@ -49,6 +52,7 @@ export default {
 		return {
 			outerVisible: false,
 			baseUrl: process.env.BASE_URL,
+			fileList: [],
 			form: {
 				title: '',
 				datetime: '',

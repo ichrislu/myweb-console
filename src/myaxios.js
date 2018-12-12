@@ -43,6 +43,7 @@ let xhr = axios.create({
 })
 
 if (sessionStorage.getItem("key")) {
+	console.log('set key')
 	xhr.defaults.headers.common['Authorization'] = 'Bearer ' + sessionStorage.getItem("key");
 }
 
