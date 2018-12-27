@@ -37,9 +37,9 @@ let loadingAry = [];
 let xhr = axios.create({
 	baseURL: process.env.BASE_URL,
 	timeout: 10000,
-	headers: {
-		'X-Requested-With': 'XMLHttpRequest'
-	}
+	// headers: {
+	// 	'X-Requested-With': 'XMLHttpRequest'
+	// }
 })
 
 if (sessionStorage.getItem("key")) {
@@ -132,7 +132,7 @@ xhr.interceptors.response.use(response => {
 			// showClose: true,
 		});
 
-		return Promise.resolve()
+		// return Promise.resolve()
 	}
 
 	// 错误不处理，返回异常
