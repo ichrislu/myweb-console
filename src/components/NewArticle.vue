@@ -38,7 +38,7 @@
 			</el-upload>
 			<el-collapse accordion v-for="(item, key) in folders" :key="key">
 				<el-collapse-item :title="key" :name="key">
-					<img :src="baseUrl+'/pic/'+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="baseUrl+'/pic/'+key+'/'+si"  @success="copySuccess" @error="copyError" style="cursor: pointer;">
+					<img :src="baseUrl+'/pic/'+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="baseUrl+'/pic/'+key+'/'+si" @success="copySuccess" @error="copyError" style="cursor: pointer;">
 				</el-collapse-item>
 			</el-collapse>
 		</el-dialog>
@@ -73,6 +73,7 @@ export default {
 			this.get('/admin/p')
 				.then((resp) => {
 					my.folders = resp.data;
+					console.log(resp.data)
 				})
 		},
 		copySuccess() {
