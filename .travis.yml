@@ -11,6 +11,8 @@ before_install:
   - chmod 600 ~/.ssh/id_rsa
 
 after_success:
+  - pwd
+  - ls
   - scp -o stricthostkeychecking=no -r dist/* centos@ichris.info:/opt/service/web/www/
   - ssh centos@ichris.info "pwd"
 
