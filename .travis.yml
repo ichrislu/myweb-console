@@ -5,6 +5,9 @@ node_js:
 
 cache: npm
 
+script:
+  - npm run build
+
 before_install:
   - openssl aes-256-cbc -K $encrypted_3fe0369f6901_key -iv $encrypted_3fe0369f6901_iv
     -in myserver.pem.enc -out ~/.ssh/id_rsa -d
