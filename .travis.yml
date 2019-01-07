@@ -13,7 +13,8 @@ before_install:
   - chmod 600 ~/.ssh/id_rsa
 
 after_success:
-  - scp -o stricthostkeychecking=no -r dist/* centos@ichris.info:$web_root
+  - scp -o stricthostkeychecking=no -r dist/* centos@ichris.info:$web_root_new
+  - ssh centos@ichris.info "rm -fr $web_root && mv $web_root_new $web_root"
 
 addons:
   ssh_known_hosts: ichris.info
