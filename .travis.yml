@@ -14,7 +14,7 @@ before_install:
 
 after_success:
   - scp -o stricthostkeychecking=no -r dist centos@ichris.info:$web_root_new
-  - ssh centos@ichris.info "rm -fr $web_root && mv $web_root_new $web_root"
+  - ssh centos@ichris.info "rm -fr $web_root/* && cp -fr $web_root_new/* $web_root/ && rm -fr $web_root_new"
 
 addons:
   ssh_known_hosts: ichris.info
