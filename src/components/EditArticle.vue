@@ -76,7 +76,7 @@ export default {
 		onSubmit() {
 			let my = this;
 
-			let data = new FormData();
+			let data = new FormData()
 			data.append('title', my.form.title)
 			data.append('content', my.form.content)
 			data.append('issueTime', my.form.issue_time)
@@ -96,7 +96,14 @@ export default {
 		closeTag(tag) {
 			let my = this;
 
-			this.delete(my.url + "/admin/a/" + my.$route.params.aid + "/" + tag)
+			let params = {
+				params: {
+					'aid': my.$route.params.aid,
+					'tag': tag
+				}
+			}
+
+			this.delete("/admin/a/t", params)
 				.then(resp => {
 					my.form.tags.splice(my.form.tags.indexOf(tag), 1);
 				})
@@ -115,7 +122,11 @@ export default {
 				return;
 			}
 
-			this.post(my.url + "/admin/a/" + my.$route.params.aid + "/" + tag)
+			let data = new FormData()
+			data.append('aid', my.$route.params.aid)
+			data.append('tag', tag)
+
+			this.post("/admin/a/t", data)
 				.then(resp => {
 					my.form.tags.push(tag);
 					my.form.inputVisible = false;

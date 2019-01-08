@@ -73,7 +73,6 @@ export default {
 			this.get('/admin/p')
 				.then((resp) => {
 					my.folders = resp.data;
-					console.log(resp.data)
 				})
 		},
 		copySuccess() {
