@@ -40,7 +40,6 @@ let xhr = axios.create({
 })
 
 if (sessionStorage.getItem("key")) {
-	console.log('set key')
 	xhr.defaults.headers.common['Authorization'] = 'Bearer ' + sessionStorage.getItem("key");
 }
 
@@ -144,5 +143,6 @@ export default {
 		Vue.prototype.post = (url, data, config) => xhr.post(url, data, config)
 		Vue.prototype.put = (url, data, config) => xhr.put(url, data, config)
 		Vue.prototype.delete = (url, config) => xhr.delete(url, config)
+		Vue.prototype.myaxios = xhr
 	}
 }

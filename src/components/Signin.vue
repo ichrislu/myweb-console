@@ -31,6 +31,9 @@ export default {
 				.then (resp => {
 					my.$message.success({message: '认证成功'});
 					sessionStorage.setItem("key", my.key)
+
+					this.myaxios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionStorage.getItem("key");
+
 					my.$router.push({
 						path: "article/list"
 					});
