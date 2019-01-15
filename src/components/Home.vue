@@ -17,10 +17,10 @@
 								<i class="el-icon-star-on"></i>
 								<span slot="title">Tags</span>
 							</el-menu-item>
-							<el-menu-item index="/picture">
+							<!-- <el-menu-item index="/picture">
 								<i class="el-icon-picture"></i>
 								<span slot="title">Picture</span>
-							</el-menu-item>
+							</el-menu-item> -->
 							<el-menu-item index="">
 								<i class="el-icon-refresh"></i>
 								<span slot="title" @click.stop="signout">Signout</span>

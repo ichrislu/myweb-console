@@ -33,12 +33,12 @@
 		</Affix>
 
 		<el-dialog title="Folder" :visible.sync="outerVisible" fullscreen>
-			<el-upload :action="baseUrl+'/admin/p'" multiple :file-list="fileList">
+			<el-upload :action="baseUrl+'/admin/p'" :headers="authorization" multiple :file-list="fileList">
 				<el-button size="small" type="primary">点击上传</el-button>
 			</el-upload>
 			<el-collapse accordion v-for="(item, key) in folders" :key="key">
 				<el-collapse-item :title="key" :name="key">
-					<img :src="baseUrl+'/pic/'+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="baseUrl+'/pic/'+key+'/'+si" @success="copySuccess" @error="copyError" style="cursor: pointer;">
+					<img :src="picBaseUrl+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="picBaseUrl+key+'/'+si" @success="copySuccess" @error="copyError" style="cursor: pointer;">
 				</el-collapse-item>
 			</el-collapse>
 		</el-dialog>
@@ -52,7 +52,10 @@ export default {
 		return {
 			outerVisible: false,
 			baseUrl: process.env.BASE_URL,
+			picBaseUrl: process.env.PIC_BASE_URL,
 			fileList: [],
+			// authorization: {'Authorization': 'Bearer' + sessionStorage.getItem("key")},
+			authorization: {Authorization: 'Bearer ' + sessionStorage.getItem("key")},
 			form: {
 				title: '',
 				datetime: '',
@@ -78,7 +81,7 @@ export default {
 		copySuccess() {
 			this.$notify.success({ title: "复制成功" });
 		},
-		copyError() {
+		copyError(e) {
 			this.$notify.error({ title: "复制失败" });
 		},
 		onSubmit() {
