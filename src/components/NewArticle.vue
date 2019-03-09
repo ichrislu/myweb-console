@@ -38,7 +38,7 @@
 			</el-upload>
 			<el-collapse accordion v-for="(item, key) in folders" :key="key">
 				<el-collapse-item :title="key" :name="key">
-					<img :src="picBaseUrl+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="picBaseUrl+key+'/'+si" @success="copySuccess" @error="copyError" style="cursor: pointer;">
+					<img :src="picBaseUrl+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="key+'/'+si" @success="copySuccess" @error="copyError" style="cursor: pointer;">
 				</el-collapse-item>
 			</el-collapse>
 		</el-dialog>
@@ -54,7 +54,6 @@ export default {
 			baseUrl: process.env.BASE_URL,
 			picBaseUrl: process.env.PIC_BASE_URL,
 			fileList: [],
-			// authorization: {'Authorization': 'Bearer' + sessionStorage.getItem("key")},
 			authorization: {Authorization: 'Bearer ' + sessionStorage.getItem("key")},
 			form: {
 				title: '',
