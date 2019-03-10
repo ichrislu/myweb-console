@@ -15,11 +15,11 @@
 					<el-table-column label="操作" width="100">
 						<template slot-scope="scope">
 							<el-button type="primary" icon="el-icon-edit" size="mini" circle @click="edit(scope.row.aid)"></el-button>
-							<el-popover placement="top" width="160" v-model="visible">
-								<p>这是一段内容这是一段内容确定删除吗？</p>
+							<el-popover width="160" v-model="scope.row.show">
+								<p>确定删除吗？</p>
 								<div style="text-align: right; margin: 0">
-									<el-button size="mini" type="text" @click="visible = false">取消</el-button>
-									<el-button type="primary" size="mini" @click="visible = false">确定</el-button>
+									<el-button size="mini" type="text" @click="scope.row.show=false">取消</el-button>
+									<el-button type="primary" size="mini" @click="scope.row.show=false;del(scope.row.aid)">确定</el-button>
 								</div>
 								<el-button type="danger" slot="reference" icon="el-icon-delete" size="mini" circle></el-button>
 							</el-popover>
@@ -44,7 +44,6 @@ export default {
 			pageSize: 10,
 			total: 0,
 			articles: [],
-			visible: false,
 		};
 	},
 	methods: {
@@ -87,6 +86,10 @@ export default {
 				.then(resp => {
 					if (resp) {
 						my.articles = resp.data.Articles;
+						// 动态添加show属性,因为popover识别当前行提示是否显示
+						my.articles.forEach(item => {
+							this.$set(item, 'show', false)
+						})
 						my.total = resp.data.Total;
 					}
 				})
@@ -115,27 +118,13 @@ export default {
 		},
 
 		del(aid) {
-			// this.$confirm(title, "确认删除", {
-			// 	confirmButtonText: "确定",
-			// 	cancelButtonText: "取消",
-			// 	type: "warning"
-			// })
-			// .then(() => {
-				var my = this;
+			var my = this;
 
-				this.delete("/admin/a/" + aid)
-					.then(resp => {
-						my.getArticles();
-						my.$notify.success({ title: "提示", message: "删除成功" });
-					})
-				my.visible = false;
-			// }
-			// )
-			// .catch(error => {
-			// 	if (error != "cancel") {
-			// 		this.$notify.warning({ title: "异常", message: error.message });
-			// 	}
-			// });
+			this.delete("/admin/a/" + aid)
+				.then(resp => {
+					my.getArticles();
+					my.$notify.success({ title: "提示", message: "删除成功" });
+				})
 		}
 	},
 

@@ -22,6 +22,7 @@
 			</el-form-item>
 			<el-form-item label="Content">
 				<el-col :span="20">
+					https://sindresorhus.com/github-markdown-css/
 					<mavon-editor v-model="form.content" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
 				</el-col>
 			</el-form-item>
