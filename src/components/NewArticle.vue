@@ -22,26 +22,15 @@
 			</el-form-item>
 			<el-form-item label="Content">
 				<el-col :span="20">
-					<mavon-editor v-model="form.content" :subfield="false" :boxShadow="false" defaultOpen="edit"/>
+					<a href="https://sindresorhus.com/github-markdown-css/" target="_blank">markdown语法</a>
+					<mavon-editor v-model="form.content" ref="md" :subfield="false" :boxShadow="false" defaultOpen="edit" @imgAdd="imgAdd"/>
 				</el-col>
 			</el-form-item>
 		</el-form>
 		<Affix :offset-bottom="300" class="btn">
-			<el-button size="small" @click="showPicture">Picture</el-button>
 			<el-button size="small" type="primary" @click="onSubmit">Submit</el-button>
 			<el-button size="small" @click="onCancel">Cancel</el-button>
 		</Affix>
-
-		<el-dialog title="Folder" :visible.sync="outerVisible" fullscreen>
-			<el-upload :action="baseUrl+'/admin/p'" multiple :file-list="fileList">
-				<el-button size="small" type="primary">点击上传</el-button>
-			</el-upload>
-			<el-collapse accordion v-for="(item, key) in folders" :key="key">
-				<el-collapse-item :title="key" :name="key">
-					<img :src="baseUrl+'/pic/'+key+'/'+si" v-for="(si, sk) in item" :key="sk" v-clipboard="baseUrl+'/pic/'+key+'/'+si" @success="copySuccess" @error="copyError" style="cursor: pointer;">
-				</el-collapse-item>
-			</el-collapse>
-		</el-dialog>
 	</div>
 </template>
 
@@ -50,9 +39,8 @@ export default {
 	name: "NewArticle",
 	data() {
 		return {
-			outerVisible: false,
 			baseUrl: process.env.BASE_URL,
-			fileList: [],
+			authorization: {Authorization: 'Bearer ' + sessionStorage.getItem("key")},
 			form: {
 				title: '',
 				datetime: '',
@@ -61,26 +49,9 @@ export default {
 				inputValue: '',
 				content: ''
 			},
-			folders: [],
 		};
 	},
 	methods: {
-		showPicture() {
-			var my = this;
-
-			my.outerVisible = true
-
-			this.get('/admin/p')
-				.then((resp) => {
-					my.folders = resp.data;
-				})
-		},
-		copySuccess() {
-			this.$notify.success({ title: "复制成功" });
-		},
-		copyError() {
-			this.$notify.error({ title: "复制失败" });
-		},
 		onSubmit() {
 			let my = this;
 
@@ -118,53 +89,21 @@ export default {
 			this.form.inputVisible = false;
 			this.form.inputValue = '';
 		},
-		// imgAdd(pos, $file) {
-		// 	var my = this;
+		imgAdd(pos, $file) {
+			var my = this;
 
-		// 	var data = new FormData();
-		// 	data.append('file', $file);
+			var data = new FormData();
+			data.append('file', $file);
 
-		// 	this.post("/admin/f", data)
-		// 		.then(resp => {
-		// 			console.info("add:" + pos)
-		// 			console.log("resp:" + resp.data)
-		// 			my.$refs.md.$img2Url(pos, resp.data);
-		// 			my.images[pos] = resp.data;
-		// 			console.log("my.images[0]:" + my.images[0])
-		// 			console.log("my.images[1]:" + my.images[1])
-		// 		})
-		// 		.catch(function(err) {
-		// 			my.$notify.error({ title: "上传文件失败", message: err.message });
-		// 		});
-		// },
-		// imgDel(pos) {
-		// 	var my = this;
-		// 	console.info("pos:" + pos)
-		// 	var file = my.images[pos[1]];
-		// 	console.log("file:" + file)
-		// 	// return;
-
-		// 	var data = new Data();
-		// 	data.append('file', file)
-
-		// 	// delete的传参不一样
-		// 	let config = {
-		// 		headers: {
-		// 			'Content-Type': 'multipart/form-data',
-		// 			"Authorization": "Bearer " + sessionStorage.getItem("key")
-		// 		},
-		// 		data: data
-		// 	}
-
-		// 	my.axios.delete(my.url + "/admin/f", config)
-		// 		.then((resp) => {
-		// 			delete my.images[pos[1]];
-		// 			console.info("del success")
-		// 		})
-		// 		.catch(function(err) {
-		// 			my.$notify.error({ title: "删除文件失败", message: err.message });
-		// 		});
-		// },
+			this.post("/admin/p", data)
+				.then(resp => {
+					console.log("resp:" + resp.data)
+					my.$refs.md.$img2Url(pos, resp.data);
+				})
+				.catch(function(err) {
+					my.$notify.error({ title: "上传文件失败", message: err.message });
+				});
+		},
 	}
 };
 </script>
