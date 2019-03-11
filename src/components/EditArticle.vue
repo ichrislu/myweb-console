@@ -43,7 +43,6 @@ export default {
 	name: "EditArticle",
 	data() {
 		return {
-			url: process.env.BASE_URL,
 			form: {
 				title: '',
 				issue_time: '',
